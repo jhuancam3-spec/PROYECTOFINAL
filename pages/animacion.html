@@ -70,6 +70,13 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.08);
             margin-bottom: 20px;
         }
+        
+        .icon-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -78,22 +85,32 @@
         
         <div class="exercise-header" style="background: linear-gradient(to right, #e74c3c, #c0392b);">
             <h1><i class="fas fa-play-circle"></i> Animaciones de Métodos Numéricos</h1>
-            <p>Visualización interactiva de interpolación por Splines y Series de Fourier</p>
+            <p>Visualización interactiva de interpolación por Splines Cúbicos y Series de Fourier</p>
         </div>
         
-        <!-- Animación 1: Splines -->
         <div class="method-explanation">
-            <h3><i class="fas fa-draw-polygon"></i> Animación 1: Interpolación por Splines Cúbicos</h3>
-            <p>Los splines cúbicos crean curvas suaves que pasan por todos los puntos dados. En esta animación, veremos cómo se reconstruye una figura (mariposa) punto por punto usando splines cúbicos.</p>
+            <div class="icon-title">
+                <i class="fas fa-vase" style="color: #3498db; font-size: 1.5em;"></i>
+                <h3>Animación 1: Splines Cúbicos - Creación de Jarrón</h3>
+            </div>
+            <p>Los <strong>splines cúbicos</strong> son polinomios de tercer grado que conectan puntos de control, garantizando continuidad en la primera y segunda derivada. Esto produce curvas perfectamente suaves sin cambios bruscos.</p>
+            <p>En esta animación, utilizamos el algoritmo de <strong>Catmull-Rom</strong> para crear un jarrón clásico. Cada segmento entre puntos se calcula con una función cúbica que pasa por los puntos dados, creando una transición suave y natural.</p>
             
             <div class="formula-box">
-                <strong>Fórmula del spline cúbico:</strong><br>
-                Sᵢ(x) = aᵢ + bᵢ(x - xᵢ) + cᵢ(x - xᵢ)² + dᵢ(x - xᵢ)³
+                <strong>Fórmula del spline cúbico de Catmull-Rom:</strong><br>
+                P(t) = 0.5 × [(2P₁) + (-P₀ + P₂)t + (2P₀ - 5P₁ + 4P₂ - P₃)t² + (-P₀ + 3P₁ - 3P₂ + P₃)t³]
             </div>
+            
+            <p><strong>Aplicaciones reales:</strong> Diseño CAD, gráficos por computadora, animación 3D, diseño de vehículos y arquitectura.</p>
         </div>
         
         <div class="input-section">
-            <h3><i class="fas fa-butterfly"></i> Reconstrucción de Mariposa con Splines</h3>
+            <div class="icon-title">
+                <i class="fas fa-drafting-compass" style="color: #3498db;"></i>
+                <h3>Dibujo de Jarrón con Splines Cúbicos</h3>
+            </div>
+            
+            <p>Observa cómo se construye un jarrón simétrico punto por punto, utilizando interpolación cúbica para crear curvas perfectas.</p>
             
             <div class="animation-controls">
                 <button class="btn animacion-btn" onclick="startSplineAnimation()" id="spline-start-btn">
@@ -118,7 +135,7 @@
                     <div class="progress-fill" id="spline-progress"></div>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                    <span id="spline-status">Listo para comenzar</span>
+                    <span id="spline-status">Listo para dibujar jarrón</span>
                     <span id="spline-percentage">0%</span>
                 </div>
             </div>
@@ -128,27 +145,39 @@
             </div>
             
             <div class="info-box">
-                <p><strong>¿Cómo funciona?</strong></p>
-                <p>1. Se toman puntos de contorno de una mariposa</p>
-                <p>2. Se conectan con líneas rectas (polígono inicial)</p>
-                <p>3. Se aplican splines cúbicos para suavizar las curvas</p>
-                <p>4. La animación muestra el proceso de interpolación</p>
-            </div>
-        </div>
-        <div class="method-explanation">
-            <h3><i class="fas fa-wave-square"></i> Animación 2: Series de Fourier</h3>
-            <p>Las series de Fourier descomponen cualquier forma en una suma de círculos giratorios (epiciclos). 
-            Cada círculo representa una frecuencia diferente, y combinándolos podemos recrear formas complejas.</p>
-            
-            <div class="formula-box">
-                <strong>Fórmula paramétrica para el corazón:</strong><br>
-                x(t) = Σ[aₙ·cos(n·t) + bₙ·sin(n·t)]<br>
-                y(t) = Σ[cₙ·cos(n·t) + dₙ·sin(n·t)]
+                <p><strong>¿Qué está sucediendo en la animación?</strong></p>
+                <p>1. <strong>Puntos de control</strong> (azul claro): Define la forma básica del jarrón</p>
+                <p>2. <strong>Curva spline</strong> (azul): Se calcula interpolando entre puntos con polinomios cúbicos</p>
+                <p>3. <strong>Punto activo</strong> (rojo): Muestra la posición actual del algoritmo</p>
+                <p>4. <strong>Relleno</strong>: Al completarse, el jarrón se rellena suavemente</p>
+                <p>5. <strong>Patrones decorativos</strong>: Líneas punteadas que simulan adornos en el jarrón</p>
             </div>
         </div>
         
+        <div class="method-explanation" style="margin-top: 40px;">
+            <div class="icon-title">
+                <i class="fas fa-heart" style="color: #e74c3c; font-size: 1.5em;"></i>
+                <h3>Animación 2: Series de Fourier - Dibujo de Corazón</h3>
+            </div>
+            <p>Las <strong>series de Fourier</strong> permiten representar cualquier función periódica como suma de senos y cosenos. En términos visuales, cualquier forma cerrada puede ser recreada mediante la combinación de círculos giratorios (epiciclos).</p>
+            <p>Este corazón se genera usando la <strong>ecuación paramétrica clásica</strong>, aproximada con términos de Fourier. Cada círculo representa un término armónico diferente, y la punta del último círculo traza la figura completa.</p>
+            
+            <div class="formula-box">
+                <strong>Ecuación paramétrica del corazón matemático:</strong><br>
+                x(t) = 16 sin³(t)<br>
+                y(t) = 13 cos(t) - 5 cos(2t) - 2 cos(3t) - cos(4t)
+            </div>
+            
+            <p><strong>Aplicaciones reales:</strong> Procesamiento de señales, compresión de audio/imagen (MP3, JPEG), análisis de vibraciones, síntesis de sonido y telecomunicaciones.</p>
+        </div>
+        
         <div class="input-section">
-            <h3><i class="fas fa-heart"></i> Dibujo de Corazón con Series de Fourier</h3>
+            <div class="icon-title">
+                <i class="fas fa-wave-square" style="color: #9b59b6;"></i>
+                <h3>Generación de Corazón con Epiciclos de Fourier</h3>
+            </div>
+            
+            <p>Observa cómo múltiples círculos girando a diferentes frecuencias y radios combinan sus movimientos para dibujar un corazón perfecto.</p>
             
             <div class="animation-controls">
                 <button class="btn animacion-btn" onclick="startFourierAnimation()" id="fourier-start-btn">
@@ -166,10 +195,10 @@
                     <option value="fast">Velocidad: Rápida</option>
                 </select>
                 <select id="fourier-terms" class="input-group" style="width: auto;">
-                    <option value="5">Términos: 5</option>
-                    <option value="10" selected>Términos: 10</option>
-                    <option value="20">Términos: 20</option>
-                    <option value="30">Términos: 30</option>
+                    <option value="10">Términos: 10 (básico)</option>
+                    <option value="20" selected>Términos: 20 (recomendado)</option>
+                    <option value="30">Términos: 30 (preciso)</option>
+                    <option value="40">Términos: 40 (alta definición)</option>
                 </select>
             </div>
             
@@ -179,7 +208,7 @@
                     <div class="progress-fill" id="fourier-progress"></div>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                    <span id="fourier-status">Listo para comenzar</span>
+                    <span id="fourier-status">Listo para dibujar corazón</span>
                     <span id="fourier-percentage">0%</span>
                 </div>
             </div>
@@ -189,27 +218,70 @@
             </div>
             
             <div class="info-box">
-                <p><strong>¿Cómo funciona?</strong></p>
-                <p>1. Se descompone la figura del corazón en componentes de frecuencia</p>
-                <p>2. Cada frecuencia se representa con un círculo giratorio (epiciclo)</p>
-                <p>3. La punta del último círculo traza la figura</p>
-                <p>4. A más términos, mejor aproximación a la figura original</p>
+                <p><strong>¿Qué está sucediendo en la animación?</strong></p>
+                <p>1. <strong>Epiciclos</strong> (rojos): Círculos que giran a diferentes frecuencias</p>
+                <p>2. <strong>Puntos en epiciclos</strong> (verde): Muestran la posición en cada círculo</p>
+                <p>3. <strong>Trazo del corazón</strong> (degradado): Línea creada por el movimiento combinado</p>
+                <p>4. <strong>Punto trazador</strong> (verde grande): La punta del último epiciclo que dibuja</p>
+                <p>5. <strong>Relleno final</strong>: Al completar el ciclo, el corazón se rellena suavemente</p>
+                <p><em>A más términos de Fourier, más preciso será el corazón, pero más lenta la animación.</em></p>
             </div>
         </div>
         
         <div class="result-section" style="margin-top: 40px;">
-            <h3><i class="fas fa-info-circle"></i> Explicación de los Métodos</h3>
+            <h3><i class="fas fa-chart-line"></i> Comparación entre Splines Cúbicos y Series de Fourier</h3>
             <div class="result">
-                <p><strong>Splines Cúbicos:</strong> Método de interpolación que usa polinomios de tercer grado para conectar puntos, garantizando continuidad en la primera y segunda derivada. Perfecto para crear curvas suaves en diseño gráfico y CAD.</p>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr style="background-color: #3498db; color: white;">
+                            <th style="padding: 10px; text-align: left;">Característica</th>
+                            <th style="padding: 10px; text-align: left;">Splines Cúbicos</th>
+                            <th style="padding: 10px; text-align: left;">Series de Fourier</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 10px;"><strong>Principio matemático</strong></td>
+                            <td style="padding: 10px;">Interpolación polinómica por segmentos</td>
+                            <td style="padding: 10px;">Descomposición en funciones periódicas</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 10px;"><strong>Suavidad garantizada</strong></td>
+                            <td style="padding: 10px;">Continuidad C² (2da derivada)</td>
+                            <td style="padding: 10px;">Suavidad infinita (funciones seno/coseno)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 10px;"><strong>Datos de entrada</strong></td>
+                            <td style="padding: 10px;">Puntos de control discretos</td>
+                            <td style="padding: 10px;">Función continua o puntos muestreados</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 10px;"><strong>Ventajas</strong></td>
+                            <td style="padding: 10px;">Control local, eficiente computacionalmente</td>
+                            <td style="padding: 10px;">Análisis de frecuencia, compresión de datos</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 10px;"><strong>Aplicaciones típicas</strong></td>
+                            <td style="padding: 10px;">Diseño CAD, animación 3D, gráficos vectoriales</td>
+                            <td style="padding: 10px;">Procesamiento de señales, audio, imágenes, telecomunicaciones</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;"><strong>Ejemplo en animación</strong></td>
+                            <td style="padding: 10px;">Jarrón (forma controlada por puntos)</td>
+                            <td style="padding: 10px;">Corazón (forma periódica recreada con epiciclos)</td>
+                        </tr>
+                    </tbody>
+                </table>
                 
-                <p><strong>Series de Fourier:</strong> Descomposición de funciones en componentes sinusoidales. Usado en procesamiento de señales, compresión de audio/imagen, y análisis de vibraciones. La animación con epiciclos muestra visualmente el concepto.</p>
-                
-                <p>Estas animaciones demuestran la potencia de los métodos numéricos para aproximar y reconstruir formas complejas a partir de datos simples.</p>
+                <div style="margin-top: 20px; padding: 15px; background-color: #e8f4fc; border-radius: 5px; border-left: 4px solid #3498db;">
+                    <p><strong>Conclusión:</strong> Ambos métodos demuestran la potencia de las matemáticas aplicadas para resolver problemas complejos de representación gráfica. Mientras los splines son ideales para diseño asistido por computadora donde se necesita control preciso, las series de Fourier son fundamentales para el análisis y procesamiento de señales en el dominio de la frecuencia.</p>
+                    <p>Estas animaciones no solo muestran resultados visualmente atractivos, sino que también ilustran conceptos matemáticos profundos que tienen aplicaciones prácticas en ingeniería, ciencia y tecnología.</p>
+                </div>
             </div>
         </div>
+        
     </div>
 
     <script src="../js/animacion.js"></script>
 </body>
-
 </html>

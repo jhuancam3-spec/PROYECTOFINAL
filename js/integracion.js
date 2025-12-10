@@ -1,13 +1,10 @@
-// Variables globales para gráficos
 let energyIntegrationChart = null;
 let distanceIntegrationChart = null;
 
-// Calcular consumo de energía
 function calculateEnergyConsumption() {
     const energyDataInput = document.getElementById('energy-data').value;
     const method = document.getElementById('integration-method-energy').value;
     
-    // Convertir datos a array de números
     const values = energyDataInput.split(',').map(val => parseFloat(val.trim())).filter(val => !isNaN(val));
     
     if (values.length < 2) {
@@ -15,11 +12,9 @@ function calculateEnergyConsumption() {
         return;
     }
     
-    // Asumimos mediciones cada 2 horas
-    const interval = 2; // horas
+    const interval = 2; 
     const totalHours = (values.length - 1) * interval;
     
-    // Calcular integral según el método seleccionado
     let integral;
     let methodName;
     
@@ -27,7 +22,6 @@ function calculateEnergyConsumption() {
         integral = trapezoidalRule(values, interval);
         methodName = "Método del Trapecio";
     } else {
-        // Simpson requiere un número impar de puntos
         if (values.length % 2 === 0) {
             alert('El método de Simpson requiere un número impar de puntos. Usando método del trapecio en su lugar.');
             integral = trapezoidalRule(values, interval);
@@ -38,10 +32,8 @@ function calculateEnergyConsumption() {
         }
     }
     
-    // Calcular consumo total en kWh (integral de potencia en kW sobre tiempo en horas)
     const consumoTotal = integral;
     
-    // Mostrar resultados
     const resultDiv = document.getElementById('energy-integration-result');
     resultDiv.innerHTML = `
         <div class="result">
@@ -55,20 +47,16 @@ function calculateEnergyConsumption() {
         </div>
     `;
     
-    // Mostrar sección de resultados
     document.getElementById('energy-result-section').style.display = 'block';
     
-    // Crear gráfico
     createEnergyChart(values, interval, consumoTotal, methodName);
 }
 
-// Calcular distancia recorrida
 function calculateDistanceTraveled() {
     const velocityDataInput = document.getElementById('velocity-data').value;
     const interval = parseFloat(document.getElementById('time-interval').value);
     const method = document.getElementById('integration-method-distance').value;
     
-    // Convertir datos a array de números
     const values = velocityDataInput.split(',').map(val => parseFloat(val.trim())).filter(val => !isNaN(val));
     
     if (values.length < 2) {
@@ -83,7 +71,6 @@ function calculateDistanceTraveled() {
     
     const totalTime = (values.length - 1) * interval;
     
-    // Calcular integral según el método seleccionado
     let integral;
     let methodName;
     
@@ -91,7 +78,6 @@ function calculateDistanceTraveled() {
         integral = trapezoidalRule(values, interval);
         methodName = "Método del Trapecio";
     } else {
-        // Simpson requiere un número impar de puntos
         if (values.length % 2 === 0) {
             alert('El método de Simpson requiere un número impar de puntos. Usando método del trapecio en su lugar.');
             integral = trapezoidalRule(values, interval);
@@ -102,13 +88,10 @@ function calculateDistanceTraveled() {
         }
     }
     
-    // La integral de velocidad sobre tiempo es distancia
     const distancia = integral;
     
-    // Calcular velocidad promedio
     const velocidadPromedio = distancia / totalTime;
     
-    // Mostrar resultados
     const resultDiv = document.getElementById('distance-integration-result');
     resultDiv.innerHTML = `
         <div class="result">
@@ -122,14 +105,11 @@ function calculateDistanceTraveled() {
         </div>
     `;
     
-    // Mostrar sección de resultados
     document.getElementById('distance-result-section').style.display = 'block';
     
-    // Crear gráfico
     createDistanceChart(values, interval, distancia, methodName);
 }
 
-// Método del Trapecio
 function trapezoidalRule(values, h) {
     let sum = values[0] + values[values.length - 1];
     
@@ -140,16 +120,13 @@ function trapezoidalRule(values, h) {
     return (h / 2) * sum;
 }
 
-// Método de Simpson 1/3
 function simpsonRule(values, h) {
     let sum = values[0] + values[values.length - 1];
     
-    // Términos impares
     for (let i = 1; i < values.length - 1; i += 2) {
         sum += 4 * values[i];
     }
     
-    // Términos pares
     for (let i = 2; i < values.length - 1; i += 2) {
         sum += 2 * values[i];
     }
@@ -157,22 +134,18 @@ function simpsonRule(values, h) {
     return (h / 3) * sum;
 }
 
-// Crear gráfico para consumo de energía
 function createEnergyChart(values, interval, consumoTotal, methodName) {
     const ctx = document.getElementById('energy-integration-chart').getContext('2d');
     
-    // Generar tiempos (cada 'interval' horas)
     const times = [];
     for (let i = 0; i < values.length; i++) {
         times.push(i * interval);
     }
     
-    // Destruir gráfico anterior si existe
     if (energyIntegrationChart) {
         energyIntegrationChart.destroy();
     }
     
-    // Crear nuevo gráfico
     energyIntegrationChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -218,22 +191,18 @@ function createEnergyChart(values, interval, consumoTotal, methodName) {
     });
 }
 
-// Crear gráfico para distancia
 function createDistanceChart(values, interval, distancia, methodName) {
     const ctx = document.getElementById('distance-integration-chart').getContext('2d');
     
-    // Generar tiempos (cada 'interval' horas)
     const times = [];
     for (let i = 0; i < values.length; i++) {
         times.push(i * interval);
     }
     
-    // Destruir gráfico anterior si existe
     if (distanceIntegrationChart) {
         distanceIntegrationChart.destroy();
     }
     
-    // Crear nuevo gráfico
     distanceIntegrationChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -277,4 +246,5 @@ function createDistanceChart(values, interval, distancia, methodName) {
             }
         }
     });
+
 }

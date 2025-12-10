@@ -374,7 +374,7 @@ function drawFourierAnimation() {
     
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const scale = Math.min(canvas.width, canvas.height) * 0.15; // Tamaño adecuado
+    const scale = Math.min(canvas.width, canvas.height) * 0.075; // Tamaño adecuado
     
     // Calcular progreso
     const progress = fourierTime / (2 * Math.PI);
@@ -694,4 +694,5 @@ window.addEventListener('resize', function() {
         drawFourierAnimation();
     }
 });
+
 

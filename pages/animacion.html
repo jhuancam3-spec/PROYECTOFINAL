@@ -135,15 +135,15 @@
                 <p>4. La animación muestra el proceso de interpolación</p>
             </div>
         </div>
-        
-        <!-- Animación 2: Fourier -->
-        <div class="method-explanation" style="margin-top: 40px;">
+        <div class="method-explanation">
             <h3><i class="fas fa-wave-square"></i> Animación 2: Series de Fourier</h3>
-            <p>Las series de Fourier pueden representar cualquier función periódica como suma de senos y cosenos. En esta animación, veremos cómo se dibuja un corazón usando epiciclos (círculos que giran dentro de otros círculos).</p>
+            <p>Las series de Fourier descomponen cualquier forma en una suma de círculos giratorios (epiciclos). 
+            Cada círculo representa una frecuencia diferente, y combinándolos podemos recrear formas complejas.</p>
             
             <div class="formula-box">
-                <strong>Serie de Fourier:</strong><br>
-                f(x) = a₀/2 + Σ[aₙ·cos(nωx) + bₙ·sin(nωx)]
+                <strong>Fórmula paramétrica para el corazón:</strong><br>
+                x(t) = Σ[aₙ·cos(n·t) + bₙ·sin(n·t)]<br>
+                y(t) = Σ[cₙ·cos(n·t) + dₙ·sin(n·t)]
             </div>
         </div>
         
@@ -197,7 +197,6 @@
             </div>
         </div>
         
-        <!-- Información adicional -->
         <div class="result-section" style="margin-top: 40px;">
             <h3><i class="fas fa-info-circle"></i> Explicación de los Métodos</h3>
             <div class="result">
@@ -212,4 +211,5 @@
 
     <script src="../js/animacion.js"></script>
 </body>
+
 </html>

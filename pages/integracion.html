@@ -17,6 +17,7 @@
             <p>Aproximación de integrales usando los métodos del Trapecio y Simpson</p>
         </div>
         
+        <!-- Ejercicio 1: Consumo de energía -->
         <div class="input-section">
             <h3><i class="fas fa-bolt"></i> Ejercicio 1: Calcular consumo de energía</h3>
             <p>Ingresa datos de consumo de energía (kW) en diferentes horas del día para calcular el consumo total usando métodos de integración.</p>
@@ -35,26 +36,23 @@
                 </select>
             </div>
             
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
-                <button class="calculate-btn" onclick="calculateEnergyConsumption()">
-                    <i class="fas fa-calculator"></i> Calcular Consumo Total de Energía
-                </button>
-                
-                <button class="excel-btn" onclick="window.open('excel/Integration_Energia.xlsx', '_blank')">
-                    <i class="fas fa-file-excel"></i> Ver solución en Excel - Energía
-                </button>
-            </div>
+            <button class="calculate-btn" onclick="calculateEnergyConsumption()">
+                <i class="fas fa-calculator"></i> Calcular Consumo Total de Energía
+            </button>
         </div>
         
+        <!-- Resultados Ejercicio 1 -->
         <div id="energy-result-section" class="result-section" style="display: none;">
             <h3><i class="fas fa-chart-bar"></i> Resultados - Consumo de Energía</h3>
             <div id="energy-integration-result">
+                <!-- Los resultados se mostrarán aquí -->
             </div>
             <div class="chart-container">
                 <canvas id="energy-integration-chart"></canvas>
             </div>
         </div>
         
+        <!-- Ejercicio 2: Distancia recorrida -->
         <div class="input-section">
             <h3><i class="fas fa-car"></i> Ejercicio 2: Calcular distancia recorrida</h3>
             <p>Ingresa datos de velocidad (km/h) en diferentes tiempos para calcular la distancia total recorrida.</p>
@@ -77,20 +75,16 @@
                 </select>
             </div>
             
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
-                <button class="calculate-btn" onclick="calculateDistanceTraveled()">
-                    <i class="fas fa-calculator"></i> Calcular Distancia Recorrida
-                </button>
-                
-                <button class="excel-btn" onclick="window.open('excel/Integration_Distancia.xlsx', '_blank')">
-                    <i class="fas fa-file-excel"></i> Ver solución en Excel - Distancia
-                </button>
-            </div>
+            <button class="calculate-btn" onclick="calculateDistanceTraveled()">
+                <i class="fas fa-calculator"></i> Calcular Distancia Recorrida
+            </button>
         </div>
         
+        <!-- Resultados Ejercicio 2 -->
         <div id="distance-result-section" class="result-section" style="display: none;">
             <h3><i class="fas fa-chart-bar"></i> Resultados - Distancia Recorrida</h3>
             <div id="distance-integration-result">
+                <!-- Los resultados se mostrarán aquí -->
             </div>
             <div class="chart-container">
                 <canvas id="distance-integration-chart"></canvas>
@@ -99,42 +93,6 @@
     </div>
 
     <script src="../js/integracion.js"></script>
-    
-    <style>
-        .excel-btn {
-            background: linear-gradient(to right, #217346, #1d6f42);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            text-decoration: none;
-        }
-        
-        .excel-btn:hover {
-            background: linear-gradient(to right, #1d6f42, #0d8b4d);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        
-        .excel-btn i {
-            font-size: 18px;
-        }
-        
-        .excel-btn:nth-of-type(2) {
-            background: linear-gradient(to right, #9b59b6, #8e44ad);
-        }
-        
-        .excel-btn:nth-of-type(2):hover {
-            background: linear-gradient(to right, #8e44ad, #9b59b6);
-        }
-    </style>
 </body>
 </html>
 

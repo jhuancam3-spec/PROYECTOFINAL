@@ -1,8 +1,6 @@
-// Variables globales para gráficos
 let lagrangeChart = null;
 let newtonChart = null;
 
-// Agregar pares de datos
 function addDataPair(type) {
     let container;
     let html;
@@ -26,7 +24,6 @@ function addDataPair(type) {
     container.insertAdjacentHTML('beforeend', html);
 }
 
-// Eliminar último par de datos
 function removeDataPair(type) {
     let container;
     
@@ -41,9 +38,8 @@ function removeDataPair(type) {
     }
 }
 
-// Calcular interpolación de Lagrange
 function calculateLagrangeInterpolation() {
-    // Obtener datos
+ 
     const xInputs = document.getElementsByClassName('lagrange-x-input');
     const yInputs = document.getElementsByClassName('lagrange-y-input');
     
@@ -63,7 +59,6 @@ function calculateLagrangeInterpolation() {
         return;
     }
     
-    // Valor a interpolar
     const xValue = parseFloat(document.getElementById('lagrange-value').value);
     
     if (isNaN(xValue)) {
@@ -71,11 +66,9 @@ function calculateLagrangeInterpolation() {
         return;
     }
     
-    // Calcular interpolación de Lagrange
     const result = lagrangeInterpolation(points, xValue);
     const polynomial = getLagrangePolynomial(points);
     
-    // Mostrar resultados
     const resultDiv = document.getElementById('lagrange-interpolation-result');
     resultDiv.innerHTML = `
         <div class="result">
@@ -90,16 +83,13 @@ function calculateLagrangeInterpolation() {
         </div>
     `;
     
-    // Mostrar sección de resultados
     document.getElementById('lagrange-result-section').style.display = 'block';
     
-    // Crear gráfico
     createLagrangeChart(points, xValue, result);
 }
 
-// Calcular interpolación de Newton
 function calculateNewtonInterpolation() {
-    // Obtener datos
+  
     const xInputs = document.getElementsByClassName('newton-x-input');
     const yInputs = document.getElementsByClassName('newton-y-input');
     
@@ -119,7 +109,6 @@ function calculateNewtonInterpolation() {
         return;
     }
     
-    // Valor a interpolar
     const xValue = parseFloat(document.getElementById('newton-value').value);
     
     if (isNaN(xValue)) {
@@ -127,11 +116,9 @@ function calculateNewtonInterpolation() {
         return;
     }
     
-    // Calcular interpolación de Newton
     const result = newtonInterpolation(points, xValue);
     const polynomial = getNewtonPolynomial(points);
     
-    // Mostrar resultados
     const resultDiv = document.getElementById('newton-interpolation-result');
     resultDiv.innerHTML = `
         <div class="result">
@@ -150,14 +137,11 @@ function calculateNewtonInterpolation() {
         </div>
     `;
     
-    // Mostrar sección de resultados
     document.getElementById('newton-result-section').style.display = 'block';
     
-    // Crear gráfico
     createNewtonChart(points, xValue, result);
 }
 
-// Interpolación de Lagrange
 function lagrangeInterpolation(points, x) {
     let result = 0;
     const n = points.length;
@@ -174,7 +158,6 @@ function lagrangeInterpolation(points, x) {
         result += term;
     }
     
-    // Calcular puntos para la curva
     const curvePoints = generateCurvePoints(points, (xValue) => {
         let y = 0;
         for (let i = 0; i < n; i++) {
@@ -195,7 +178,6 @@ function lagrangeInterpolation(points, x) {
     };
 }
 
-// Obtener polinomio de Lagrange como string
 function getLagrangePolynomial(points) {
     const n = points.length;
     let terms = [];
@@ -219,14 +201,11 @@ function getLagrangePolynomial(points) {
     return `P(x) = ${terms.join(' + ')}`;
 }
 
-// Interpolación de Newton
 function newtonInterpolation(points, x) {
     const n = points.length;
     
-    // Calcular diferencias divididas
     const dividedDifferences = calculateDividedDifferences(points);
     
-    // Calcular valor interpolado
     let result = dividedDifferences[0][0];
     let product = 1;
     
@@ -235,7 +214,6 @@ function newtonInterpolation(points, x) {
         result += dividedDifferences[0][i] * product;
     }
     
-    // Calcular puntos para la curva usando polinomio de Newton
     const curvePoints = generateCurvePoints(points, (xValue) => {
         let y = dividedDifferences[0][0];
         let prod = 1;
@@ -255,18 +233,15 @@ function newtonInterpolation(points, x) {
     };
 }
 
-// Calcular diferencias divididas
 function calculateDividedDifferences(points) {
     const n = points.length;
     const table = new Array(n);
     
-    // Inicializar tabla
     for (let i = 0; i < n; i++) {
         table[i] = new Array(n);
         table[i][0] = points[i].y;
     }
     
-    // Calcular diferencias divididas
     for (let j = 1; j < n; j++) {
         for (let i = 0; i < n - j; i++) {
             table[i][j] = (table[i+1][j-1] - table[i][j-1]) / (points[i+j].x - points[i].x);
@@ -276,7 +251,6 @@ function calculateDividedDifferences(points) {
     return table;
 }
 
-// Obtener polinomio de Newton como string
 function getNewtonPolynomial(points) {
     const n = points.length;
     const dividedDifferences = calculateDividedDifferences(points);
@@ -295,24 +269,20 @@ function getNewtonPolynomial(points) {
     return `P(x) = ${terms.join('')}`;
 }
 
-// Formatear tabla de diferencias divididas
 function formatDividedDifferencesTable(table) {
     let html = '<table style="width: 100%; border-collapse: collapse;">';
     const n = table.length;
     
-    // Encabezados
     html += '<tr><th>X</th><th>Y</th>';
     for (let i = 1; i < n; i++) {
         html += `<th>Orden ${i}</th>`;
     }
     html += '</tr>';
     
-    // Filas
     for (let i = 0; i < n; i++) {
         html += '<tr>';
         for (let j = 0; j < n - i; j++) {
             if (j === 0) {
-                // Mostrar X e Y solo en la primera fila de cada grupo
                 if (i === 0) {
                     html += `<td rowspan="${n-i}">x${i}</td><td>${table[i][j].toFixed(4)}</td>`;
                 } else {
@@ -329,17 +299,14 @@ function formatDividedDifferencesTable(table) {
     return html;
 }
 
-// Generar puntos para la curva
 function generateCurvePoints(points, interpolationFunction) {
     const xValues = [];
     const yValues = [];
     
-    // Encontrar rango de X
     const minX = Math.min(...points.map(p => p.x));
     const maxX = Math.max(...points.map(p => p.x));
     const range = maxX - minX;
     
-    // Generar puntos adicionales para una curva suave
     const numPoints = 100;
     for (let i = 0; i <= numPoints; i++) {
         const x = minX - 0.1 * range + (i / numPoints) * (range * 1.2);
@@ -351,26 +318,21 @@ function generateCurvePoints(points, interpolationFunction) {
     return {xValues: xValues, yValues: yValues};
 }
 
-// Crear gráfico para Lagrange
 function createLagrangeChart(points, xValue, result) {
     const ctx = document.getElementById('lagrange-interpolation-chart').getContext('2d');
     
-    // Datos originales
     const originalX = points.map(p => p.x);
     const originalY = points.map(p => p.y);
     
-    // Punto interpolado
     const interpolatedPoint = {
         x: xValue,
         y: result.interpolatedValue
     };
     
-    // Destruir gráfico anterior si existe
     if (lagrangeChart) {
         lagrangeChart.destroy();
     }
     
-    // Crear nuevo gráfico
     lagrangeChart = new Chart(ctx, {
         type: 'scatter',
         data: {
@@ -444,26 +406,21 @@ function createLagrangeChart(points, xValue, result) {
     });
 }
 
-// Crear gráfico para Newton
 function createNewtonChart(points, xValue, result) {
     const ctx = document.getElementById('newton-interpolation-chart').getContext('2d');
     
-    // Datos originales
     const originalX = points.map(p => p.x);
     const originalY = points.map(p => p.y);
     
-    // Punto interpolado
     const interpolatedPoint = {
         x: xValue,
         y: result.interpolatedValue
     };
     
-    // Destruir gráfico anterior si existe
     if (newtonChart) {
         newtonChart.destroy();
     }
     
-    // Crear nuevo gráfico
     newtonChart = new Chart(ctx, {
         type: 'scatter',
         data: {
@@ -535,4 +492,5 @@ function createNewtonChart(points, xValue, result) {
             }
         }
     });
+
 }

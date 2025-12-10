@@ -46,12 +46,12 @@
                 <input type="number" id="predict-hour" placeholder="Ingresa una hora (0-23)" min="0" max="23" value="14">
             </div>
             
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
                 <button class="calculate-btn" onclick="calculateTempRegression()">
                     <i class="fas fa-calculator"></i> Calcular Regresión de Temperatura
                 </button>
                 
-                <button class="excel-btn" onclick="window.open('excel/Regresion_Temperatura.xlsx', '_blank')">
+                <button class="excel-btn" onclick="window.open('excel/Regression_Temperatura.xlsx', '_blank')">
                     <i class="fas fa-file-excel"></i> Ver solución en Excel - Temperatura
                 </button>
             </div>
@@ -65,7 +65,7 @@
                 <canvas id="temp-regression-chart"></canvas>
             </div>
         </div>
-
+        
         <div class="input-section">
             <h3><i class="fas fa-users"></i> Ejercicio 2: Tendencia de crecimiento poblacional</h3>
             <p>Ingresa pares de datos (año, población) para calcular la tendencia de crecimiento y predecir la población futura.</p>
@@ -95,12 +95,12 @@
                 <input type="number" id="predict-year" placeholder="Ingresa un año" value="2025">
             </div>
             
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
                 <button class="calculate-btn" onclick="calculatePopulationRegression()">
                     <i class="fas fa-calculator"></i> Calcular Tendencia de Población
                 </button>
                 
-                <button class="excel-btn" onclick="window.open('excel/Regresion_Poblacion.xlsx', '_blank')">
+                <button class="excel-btn" onclick="window.open('excel/Regression_Poblacion.xlsx', '_blank')">
                     <i class="fas fa-file-excel"></i> Ver solución en Excel - Población
                 </button>
             </div>
@@ -120,7 +120,7 @@
     
     <style>
         .excel-btn {
-            background: linear-gradient(to right, #1d6f42, #0d8b4d);
+            background: linear-gradient(to right, #3498db, #2980b9);
             color: white;
             border: none;
             padding: 12px 20px;
@@ -136,13 +136,21 @@
         }
         
         .excel-btn:hover {
-            background: linear-gradient(to right, #0d8b4d, #1d6f42);
+            background: linear-gradient(to right, #2980b9, #3498db);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         
         .excel-btn i {
             font-size: 18px;
+        }
+        
+        .excel-btn:nth-of-type(2) {
+            background: linear-gradient(to right, #9b59b6, #8e44ad);
+        }
+        
+        .excel-btn:nth-of-type(2):hover {
+            background: linear-gradient(to right, #8e44ad, #9b59b6);
         }
     </style>
 </body>

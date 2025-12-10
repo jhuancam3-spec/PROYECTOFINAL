@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interpolación - Métodos Numéricos</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="exercise-container">
+        <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Inicio</a>
+        
+        <div class="exercise-header" style="background: linear-gradient(to right, #9b59b6, #8e44ad);">
+            <h1><i class="fas fa-project-diagram"></i> Interpolación Polinomial</h1>
+            <p>Estimación de valores intermedios usando métodos de Lagrange y Newton</p>
+        </div>
+        
+        <!-- Ejercicio 1: Interpolación de Lagrange -->
+        <div class="input-section">
+            <h3><i class="fas fa-sliders-h"></i> Ejercicio 1: Interpolación de Lagrange</h3>
+            <p>Ingresa puntos (x, y) para calcular el polinomio interpolante de Lagrange y estimar valores intermedios.</p>
+            
+            <div id="lagrange-data-container">
+                <div class="data-pair">
+                    <input type="number" class="lagrange-x-input" placeholder="Coordenada X" step="0.1" value="1">
+                    <input type="number" class="lagrange-y-input" placeholder="Coordenada Y" step="0.1" value="2">
+                </div>
+                <div class="data-pair">
+                    <input type="number" class="lagrange-x-input" placeholder="Coordenada X" step="0.1" value="3">
+                    <input type="number" class="lagrange-y-input" placeholder="Coordenada Y" step="0.1" value="5">
+                </div>
+                <div class="data-pair">
+                    <input type="number" class="lagrange-x-input" placeholder="Coordenada X" step="0.1" value="5">
+                    <input type="number" class="lagrange-y-input" placeholder="Coordenada Y" step="0.1" value="8">
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <button class="add-btn" onclick="addDataPair('lagrange')"><i class="fas fa-plus"></i> Agregar más puntos</button>
+                <button class="remove-btn" onclick="removeDataPair('lagrange')"><i class="fas fa-minus"></i> Eliminar último</button>
+            </div>
+            
+            <div class="input-group" style="margin-top: 20px;">
+                <label for="lagrange-value">Valor X para interpolar (estimar Y):</label>
+                <input type="number" id="lagrange-value" placeholder="Ingresa un valor X" step="0.1" value="2.5">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateLagrangeInterpolation()">
+                <i class="fas fa-calculator"></i> Calcular Interpolación de Lagrange
+            </button>
+        </div>
+        
+        <!-- Resultados Ejercicio 1 -->
+        <div id="lagrange-result-section" class="result-section" style="display: none;">
+            <h3><i class="fas fa-chart-bar"></i> Resultados - Interpolación de Lagrange</h3>
+            <div id="lagrange-interpolation-result">
+                <!-- Los resultados se mostrarán aquí -->
+            </div>
+            <div class="chart-container">
+                <canvas id="lagrange-interpolation-chart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Ejercicio 2: Interpolación de Newton -->
+        <div class="input-section">
+            <h3><i class="fas fa-code-branch"></i> Ejercicio 2: Interpolación de Newton</h3>
+            <p>Ingresa puntos (x, y) para calcular el polinomio interpolante de Newton usando diferencias divididas.</p>
+            
+            <div id="newton-data-container">
+                <div class="data-pair">
+                    <input type="number" class="newton-x-input" placeholder="Coordenada X" step="0.1" value="1">
+                    <input type="number" class="newton-y-input" placeholder="Coordenada Y" step="0.1" value="1">
+                </div>
+                <div class="data-pair">
+                    <input type="number" class="newton-x-input" placeholder="Coordenada X" step="0.1" value="2">
+                    <input type="number" class="newton-y-input" placeholder="Coordenada Y" step="0.1" value="4">
+                </div>
+                <div class="data-pair">
+                    <input type="number" class="newton-x-input" placeholder="Coordenada X" step="0.1" value="3">
+                    <input type="number" class="newton-y-input" placeholder="Coordenada Y" step="0.1" value="9">
+                </div>
+                <div class="data-pair">
+                    <input type="number" class="newton-x-input" placeholder="Coordenada X" step="0.1" value="4">
+                    <input type="number" class="newton-y-input" placeholder="Coordenada Y" step="0.1" value="16">
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <button class="add-btn" onclick="addDataPair('newton')"><i class="fas fa-plus"></i> Agregar más puntos</button>
+                <button class="remove-btn" onclick="removeDataPair('newton')"><i class="fas fa-minus"></i> Eliminar último</button>
+            </div>
+            
+            <div class="input-group" style="margin-top: 20px;">
+                <label for="newton-value">Valor X para interpolar (estimar Y):</label>
+                <input type="number" id="newton-value" placeholder="Ingresa un valor X" step="0.1" value="2.5">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateNewtonInterpolation()">
+                <i class="fas fa-calculator"></i> Calcular Interpolación de Newton
+            </button>
+        </div>
+        
+        <!-- Resultados Ejercicio 2 -->
+        <div id="newton-result-section" class="result-section" style="display: none;">
+            <h3><i class="fas fa-chart-bar"></i> Resultados - Interpolación de Newton</h3>
+            <div id="newton-interpolation-result">
+                <!-- Los resultados se mostrarán aquí -->
+            </div>
+            <div class="chart-container">
+                <canvas id="newton-interpolation-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/interpolacion.js"></script>
+</body>
+</html>

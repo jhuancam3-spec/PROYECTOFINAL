@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regresión Lineal - Métodos Numéricos</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="exercise-container">
+        <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Inicio</a>
+        
+        <div class="exercise-header" style="background: linear-gradient(to right, #3498db, #2c80b9);">
+            <h1><i class="fas fa-chart-line"></i> Regresión Lineal (Mínimos Cuadrados)</h1>
+            <p>Calcula la línea de mejor ajuste para predecir valores basados en datos existentes</p>
+        </div>
+        
+        <!-- Ejercicio 1: Temperatura -->
+        <div class="input-section">
+            <h3><i class="fas fa-thermometer-half"></i> Ejercicio 1: Predecir temperatura según hora del día</h3>
+            <p>Ingresa pares de datos (hora, temperatura) para calcular la tendencia y predecir la temperatura a cualquier hora.</p>
+            
+            <div id="temp-data-container">
+                <div class="data-pair">
+                    <input type="number" class="hour-input" placeholder="Hora (0-23)" min="0" max="23" value="8">
+                    <input type="number" class="temp-input" placeholder="Temperatura (°C)" step="0.1" value="18">
+                </div>
+                <div class="data-pair">
+                    <input type="number" class="hour-input" placeholder="Hora (0-23)" min="0" max="23" value="12">
+                    <input type="number" class="temp-input" placeholder="Temperatura (°C)" step="0.1" value="22">
+                </div>
+                <div class="data-pair">
+                    <input type="number" class="hour-input" placeholder="Hora (0-23)" min="0" max="23" value="16">
+                    <input type="number" class="temp-input" placeholder="Temperatura (°C)" step="0.1" value="20">
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <button class="add-btn" onclick="addDataPair('temp')"><i class="fas fa-plus"></i> Agregar más datos</button>
+                <button class="remove-btn" onclick="removeDataPair('temp')"><i class="fas fa-minus"></i> Eliminar último</button>
+            </div>
+            
+            <div class="input-group" style="margin-top: 20px;">
+                <label for="predict-hour">Predecir temperatura a la hora:</label>
+                <input type="number" id="predict-hour" placeholder="Ingresa una hora (0-23)" min="0" max="23" value="14">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateTempRegression()">
+                <i class="fas fa-calculator"></i> Calcular Regresión de Temperatura
+            </button>
+        </div>
+        
+        <!-- Resultados Ejercicio 1 -->
+        <div id="temp-result-section" class="result-section" style="display: none;">
+            <h3><i class="fas fa-chart-bar"></i> Resultados - Predicción de Temperatura</h3>
+            <div id="temp-regression-result">
+                <!-- Los resultados se mostrarán aquí -->
+            </div>
+            <div class="chart-container">
+                <canvas id="temp-regression-chart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Ejercicio 2: Población -->
+        <div class="input-section">
+            <h3><i class="fas fa-users"></i> Ejercicio 2: Tendencia de crecimiento poblacional</h3>
+            <p>Ingresa pares de datos (año, población) para calcular la tendencia de crecimiento y predecir la población futura.</p>
+            
+            <div id="population-data-container">
+                <div class="data-pair">
+                    <input type="number" class="year-input" placeholder="Año" value="2010">
+                    <input type="number" class="pop-input" placeholder="Población" value="50000">
+                </div>
+                <div class="data-pair">
+                    <input type="number" class="year-input" placeholder="Año" value="2015">
+                    <input type="number" class="pop-input" placeholder="Población" value="52000">
+                </div>
+                <div class="data-pair">
+                    <input type="number" class="year-input" placeholder="Año" value="2020">
+                    <input type="number" class="pop-input" placeholder="Población" value="55000">
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <button class="add-btn" onclick="addDataPair('population')"><i class="fas fa-plus"></i> Agregar más datos</button>
+                <button class="remove-btn" onclick="removeDataPair('population')"><i class="fas fa-minus"></i> Eliminar último</button>
+            </div>
+            
+            <div class="input-group" style="margin-top: 20px;">
+                <label for="predict-year">Predecir población en el año:</label>
+                <input type="number" id="predict-year" placeholder="Ingresa un año" value="2025">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculatePopulationRegression()">
+                <i class="fas fa-calculator"></i> Calcular Tendencia de Población
+            </button>
+        </div>
+        
+        <!-- Resultados Ejercicio 2 -->
+        <div id="population-result-section" class="result-section" style="display: none;">
+            <h3><i class="fas fa-chart-bar"></i> Resultados - Tendencia de Población</h3>
+            <div id="population-regression-result">
+                <!-- Los resultados se mostrarán aquí -->
+            </div>
+            <div class="chart-container">
+                <canvas id="population-regression-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/regresion.js"></script>
+</body>
+</html>

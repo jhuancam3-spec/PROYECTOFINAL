@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animaciones - Métodos Numéricos</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .animation-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .canvas-container {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #f9f9f9;
+            position: relative;
+            margin-top: 15px;
+        }
+        
+        .info-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .progress-container {
+            margin-top: 15px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .formula-box {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .method-explanation {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="exercise-container">
+        <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Inicio</a>
+        
+        <div class="exercise-header" style="background: linear-gradient(to right, #e74c3c, #c0392b);">
+            <h1><i class="fas fa-play-circle"></i> Animaciones de Métodos Numéricos</h1>
+            <p>Visualización interactiva de interpolación por Splines y Series de Fourier</p>
+        </div>
+        
+        <!-- Animación 1: Splines -->
+        <div class="method-explanation">
+            <h3><i class="fas fa-draw-polygon"></i> Animación 1: Interpolación por Splines Cúbicos</h3>
+            <p>Los splines cúbicos crean curvas suaves que pasan por todos los puntos dados. En esta animación, veremos cómo se reconstruye una figura (mariposa) punto por punto usando splines cúbicos.</p>
+            
+            <div class="formula-box">
+                <strong>Fórmula del spline cúbico:</strong><br>
+                Sᵢ(x) = aᵢ + bᵢ(x - xᵢ) + cᵢ(x - xᵢ)² + dᵢ(x - xᵢ)³
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <h3><i class="fas fa-butterfly"></i> Reconstrucción de Mariposa con Splines</h3>
+            
+            <div class="animation-controls">
+                <button class="btn animacion-btn" onclick="startSplineAnimation()" id="spline-start-btn">
+                    <i class="fas fa-play"></i> Iniciar Animación
+                </button>
+                <button class="btn" style="background-color: #3498db;" onclick="pauseSplineAnimation()" id="spline-pause-btn">
+                    <i class="fas fa-pause"></i> Pausar
+                </button>
+                <button class="btn" style="background-color: #e74c3c;" onclick="resetSplineAnimation()">
+                    <i class="fas fa-redo"></i> Reiniciar
+                </button>
+                <select id="spline-speed" class="input-group" style="width: auto;">
+                    <option value="slow">Velocidad: Lenta</option>
+                    <option value="normal" selected>Velocidad: Normal</option>
+                    <option value="fast">Velocidad: Rápida</option>
+                </select>
+            </div>
+            
+            <div class="progress-container">
+                <label>Progreso de la animación:</label>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="spline-progress"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <span id="spline-status">Listo para comenzar</span>
+                    <span id="spline-percentage">0%</span>
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <canvas id="spline-canvas"></canvas>
+            </div>
+            
+            <div class="info-box">
+                <p><strong>¿Cómo funciona?</strong></p>
+                <p>1. Se toman puntos de contorno de una mariposa</p>
+                <p>2. Se conectan con líneas rectas (polígono inicial)</p>
+                <p>3. Se aplican splines cúbicos para suavizar las curvas</p>
+                <p>4. La animación muestra el proceso de interpolación</p>
+            </div>
+        </div>
+        
+        <!-- Animación 2: Fourier -->
+        <div class="method-explanation" style="margin-top: 40px;">
+            <h3><i class="fas fa-wave-square"></i> Animación 2: Series de Fourier</h3>
+            <p>Las series de Fourier pueden representar cualquier función periódica como suma de senos y cosenos. En esta animación, veremos cómo se dibuja un corazón usando epiciclos (círculos que giran dentro de otros círculos).</p>
+            
+            <div class="formula-box">
+                <strong>Serie de Fourier:</strong><br>
+                f(x) = a₀/2 + Σ[aₙ·cos(nωx) + bₙ·sin(nωx)]
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <h3><i class="fas fa-heart"></i> Dibujo de Corazón con Series de Fourier</h3>
+            
+            <div class="animation-controls">
+                <button class="btn animacion-btn" onclick="startFourierAnimation()" id="fourier-start-btn">
+                    <i class="fas fa-play"></i> Iniciar Animación
+                </button>
+                <button class="btn" style="background-color: #3498db;" onclick="pauseFourierAnimation()" id="fourier-pause-btn">
+                    <i class="fas fa-pause"></i> Pausar
+                </button>
+                <button class="btn" style="background-color: #e74c3c;" onclick="resetFourierAnimation()">
+                    <i class="fas fa-redo"></i> Reiniciar
+                </button>
+                <select id="fourier-speed" class="input-group" style="width: auto;">
+                    <option value="slow">Velocidad: Lenta</option>
+                    <option value="normal" selected>Velocidad: Normal</option>
+                    <option value="fast">Velocidad: Rápida</option>
+                </select>
+                <select id="fourier-terms" class="input-group" style="width: auto;">
+                    <option value="5">Términos: 5</option>
+                    <option value="10" selected>Términos: 10</option>
+                    <option value="20">Términos: 20</option>
+                    <option value="30">Términos: 30</option>
+                </select>
+            </div>
+            
+            <div class="progress-container">
+                <label>Progreso de la animación:</label>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="fourier-progress"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <span id="fourier-status">Listo para comenzar</span>
+                    <span id="fourier-percentage">0%</span>
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <canvas id="fourier-canvas"></canvas>
+            </div>
+            
+            <div class="info-box">
+                <p><strong>¿Cómo funciona?</strong></p>
+                <p>1. Se descompone la figura del corazón en componentes de frecuencia</p>
+                <p>2. Cada frecuencia se representa con un círculo giratorio (epiciclo)</p>
+                <p>3. La punta del último círculo traza la figura</p>
+                <p>4. A más términos, mejor aproximación a la figura original</p>
+            </div>
+        </div>
+        
+        <!-- Información adicional -->
+        <div class="result-section" style="margin-top: 40px;">
+            <h3><i class="fas fa-info-circle"></i> Explicación de los Métodos</h3>
+            <div class="result">
+                <p><strong>Splines Cúbicos:</strong> Método de interpolación que usa polinomios de tercer grado para conectar puntos, garantizando continuidad en la primera y segunda derivada. Perfecto para crear curvas suaves en diseño gráfico y CAD.</p>
+                
+                <p><strong>Series de Fourier:</strong> Descomposición de funciones en componentes sinusoidales. Usado en procesamiento de señales, compresión de audio/imagen, y análisis de vibraciones. La animación con epiciclos muestra visualmente el concepto.</p>
+                
+                <p>Estas animaciones demuestran la potencia de los métodos numéricos para aproximar y reconstruir formas complejas a partir de datos simples.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/animacion.js"></script>
+</body>
+</html>

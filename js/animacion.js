@@ -1,3 +1,4 @@
+// Variables globales para animaciones
 let splineAnimationId = null;
 let fourierAnimationId = null;
 let splineTime = 0;
@@ -8,9 +9,10 @@ let isSplineAnimating = false;
 let isFourierAnimating = false;
 let splineSpeed = 1;
 let fourierSpeed = 1;
-let fourierTerms = 20;
+let fourierTerms = 15;
 let fourierPath = [];
 
+// Inicialización cuando se carga la página
 window.onload = function() {
     initSplineCanvas();
     initFourierCanvas();
@@ -20,6 +22,9 @@ window.onload = function() {
     drawFourierAnimation();
 };
 
+// ========== SPLINES CÚBICOS - JARRÓN CENTRADO ==========
+
+// Inicializar canvas de splines
 function initSplineCanvas() {
     const canvas = document.getElementById('spline-canvas');
     const container = canvas.parentElement;
@@ -27,176 +32,215 @@ function initSplineCanvas() {
     canvas.height = container.clientHeight;
 }
 
+// Generar puntos para un jarrón centrado
 function generateVasePoints() {
     splinePoints = [];
     
     const canvas = document.getElementById('spline-canvas');
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const vaseHeight = canvas.height * 0.6;
-    const vaseWidth = canvas.width * 0.3;
-
-    splinePoints.push({x: centerX, y: centerY + vaseHeight/2});
+    const vaseHeight = canvas.height * 0.5; // 50% del canvas
+    const vaseWidth = canvas.width * 0.25;  // 25% del canvas
     
-    for (let i = 0; i <= 5; i++) {
-        const t = i / 5;
-        const angle = t * Math.PI * 0.8; 
-        const x = centerX + Math.sin(angle) * vaseWidth * 0.8;
-        const y = centerY + vaseHeight/2 - Math.cos(angle) * vaseHeight * 0.7;
+    // Puntos para el jarrón - empezamos desde el centro de la base
+    // Punto 0: Base del jarrón (centro inferior)
+    splinePoints.push({x: centerX, y: centerY + vaseHeight/3});
+    
+    // Puntos 1-6: Cuerpo del jarrón (curva hacia afuera)
+    for (let i = 1; i <= 6; i++) {
+        const t = i / 6;
+        const angle = t * Math.PI * 0.7; // 70% de medio círculo
+        
+        // Forma de jarrón: más ancho en el medio, más estrecho arriba y abajo
+        const x = centerX + Math.sin(angle) * vaseWidth * (1 - 0.2 * Math.sin(angle * Math.PI));
+        const y = centerY + vaseHeight/3 - Math.cos(angle) * vaseHeight * 0.6;
         splinePoints.push({x: x, y: y});
     }
     
+    // Puntos 7-9: Cuello del jarrón (se estrecha)
     for (let i = 1; i <= 3; i++) {
         const t = i / 3;
-        const x = centerX + vaseWidth * 0.4 * (1 - t);
-        const y = centerY - vaseHeight/2 + vaseHeight * 0.1 * t;
+        const x = centerX + vaseWidth * 0.4 * (1 - t * 0.8);
+        const y = centerY - vaseHeight/3 + vaseHeight * 0.1 * t;
         splinePoints.push({x: x, y: y});
     }
     
-    splinePoints.push({x: centerX + vaseWidth * 0.3, y: centerY - vaseHeight/2});
-    splinePoints.push({x: centerX + vaseWidth * 0.4, y: centerY - vaseHeight/2 - 10});
+    // Puntos 10-11: Borde del jarrón
+    splinePoints.push({x: centerX + vaseWidth * 0.1, y: centerY - vaseHeight/3});
+    splinePoints.push({x: centerX + vaseWidth * 0.15, y: centerY - vaseHeight/3 - 8});
     
+    // Crear la mitad izquierda por simetría
     const rightHalfPoints = [...splinePoints];
     splinePoints = [];
     
+    // Mitad izquierda (inverso)
     for (let i = rightHalfPoints.length - 1; i >= 0; i--) {
         const point = rightHalfPoints[i];
         splinePoints.push({x: centerX - (point.x - centerX), y: point.y});
     }
     
+    // Mitad derecha
     for (let i = 1; i < rightHalfPoints.length; i++) {
         splinePoints.push(rightHalfPoints[i]);
     }
     
+    // Cerrar la figura
     splinePoints.push(splinePoints[0]);
 }
 
-function catmullRom(p0, p1, p2, p3, t) {
-    const t2 = t * t;
-    const t3 = t2 * t;
-    
-    return {
-        x: 0.5 * ((2 * p1.x) + 
-                 (-p0.x + p2.x) * t + 
-                 (2*p0.x - 5*p1.x + 4*p2.x - p3.x) * t2 + 
-                 (-p0.x + 3*p1.x - 3*p2.x + p3.x) * t3),
-        y: 0.5 * ((2 * p1.y) + 
-                 (-p0.y + p2.y) * t + 
-                 (2*p0.y - 5*p1.y + 4*p2.y - p3.y) * t2 + 
-                 (-p0.y + 3*p1.y - 3*p2.y + p3.y) * t3)
-    };
-}
-
+// Dibujar animación de splines del jarrón centrado
 function drawSplineAnimation() {
     const canvas = document.getElementById('spline-canvas');
     const ctx = canvas.getContext('2d');
     
+    // Limpiar canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    ctx.fillStyle = '#f8f9fa';
+    // Fondo suave
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#f8f9fa');
+    gradient.addColorStop(1, '#e8f4f8');
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
+    // Calcular progreso
     const progress = splineTime / 100;
     const totalPoints = splinePoints.length;
     const pointsToShow = Math.floor(progress * totalPoints);
     
+    // Actualizar progreso
     const percentage = Math.min(100, Math.floor(progress * 100));
     document.getElementById('spline-percentage').textContent = percentage + '%';
     document.getElementById('spline-progress').style.width = percentage + '%';
     
-    ctx.fillStyle = 'rgba(52, 152, 219, 0.3)';
+    // Dibujar puntos de control (más visibles y numerados)
     for (let i = 0; i < splinePoints.length; i++) {
+        // Punto rojo
+        ctx.fillStyle = '#e74c3c';
         ctx.beginPath();
-        ctx.arc(splinePoints[i].x, splinePoints[i].y, 1.5, 0, Math.PI * 2);
+        ctx.arc(splinePoints[i].x, splinePoints[i].y, 4, 0, Math.PI * 2);
         ctx.fill();
+        
+        // Anillo blanco alrededor
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(splinePoints[i].x, splinePoints[i].y, 4, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        // Número del punto
+        ctx.fillStyle = '#2c3e50';
+        ctx.font = 'bold 11px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(i, splinePoints[i].x, splinePoints[i].y);
     }
     
-    if (pointsToShow >= 4) {
+    // Dibujar líneas entre puntos ya conectados
+    if (pointsToShow > 1) {
+        ctx.strokeStyle = 'rgba(52, 152, 219, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 2]);
+        ctx.beginPath();
+        ctx.moveTo(splinePoints[0].x, splinePoints[0].y);
+        
+        for (let i = 1; i < pointsToShow; i++) {
+            ctx.lineTo(splinePoints[i].x, splinePoints[i].y);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
+    
+    // Dibujar spline suavizado
+    if (pointsToShow >= 3) {
         ctx.strokeStyle = '#3498db';
         ctx.lineWidth = 3;
         ctx.beginPath();
         
-        let firstPoint = splinePoints[0];
-        ctx.moveTo(firstPoint.x, firstPoint.y);
+        // Usar curvas cuadráticas para suavizar
+        ctx.moveTo(splinePoints[0].x, splinePoints[0].y);
         
-        for (let i = 0; i < pointsToShow - 3; i++) {
-            const p0 = splinePoints[Math.max(0, i-1)];
-            const p1 = splinePoints[i];
-            const p2 = splinePoints[i+1];
-            const p3 = splinePoints[Math.min(pointsToShow-1, i+2)];
+        for (let i = 1; i < pointsToShow; i++) {
+            const prev = splinePoints[i-1];
+            const curr = splinePoints[i];
             
-            for (let t = 0; t <= 1; t += 0.05) {
-                const point = catmullRom(p0, p1, p2, p3, t);
-                ctx.lineTo(point.x, point.y);
+            if (i === 1) {
+                ctx.lineTo(curr.x, curr.y);
+            } else {
+                const prevPrev = splinePoints[i-2];
+                const controlX = prevPrev.x + (prev.x - prevPrev.x) * 0.5;
+                const controlY = prevPrev.y + (prev.y - prevPrev.y) * 0.5;
+                
+                ctx.quadraticCurveTo(controlX, controlY, curr.x, curr.y);
             }
         }
         
         ctx.stroke();
-        
-        if (pointsToShow === totalPoints) {
-            ctx.fillStyle = 'rgba(52, 152, 219, 0.1)';
-            ctx.fill();
-        }
     }
     
+    // Dibujar punto actual en movimiento
     if (pointsToShow > 0 && pointsToShow < totalPoints) {
         const currentPoint = splinePoints[pointsToShow];
         
-        ctx.fillStyle = '#e74c3c';
+        // Punto verde brillante
+        ctx.fillStyle = '#2ecc71';
         ctx.beginPath();
-        ctx.arc(currentPoint.x, currentPoint.y, 6, 0, Math.PI * 2);
+        ctx.arc(currentPoint.x, currentPoint.y, 8, 0, Math.PI * 2);
         ctx.fill();
         
-        ctx.strokeStyle = '#e74c3c';
+        // Anillo animado
+        ctx.strokeStyle = '#2ecc71';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(currentPoint.x, currentPoint.y, 10, 0, Math.PI * 2);
+        ctx.arc(currentPoint.x, currentPoint.y, 15 + Math.sin(Date.now() * 0.005) * 3, 0, Math.PI * 2);
         ctx.stroke();
         
         document.getElementById('spline-status').textContent = 
-            `Dibujando punto ${pointsToShow} de ${totalPoints}`;
+            `Punto ${pointsToShow}: (${Math.round(currentPoint.x)}, ${Math.round(currentPoint.y)})`;
     }
     
+    // Rellenar el jarrón cuando esté completo
+    if (pointsToShow === totalPoints) {
+        ctx.fillStyle = 'rgba(52, 152, 219, 0.15)';
+        ctx.beginPath();
+        ctx.moveTo(splinePoints[0].x, splinePoints[0].y);
+        
+        for (let i = 1; i < splinePoints.length; i++) {
+            ctx.lineTo(splinePoints[i].x, splinePoints[i].y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        
+        // Patrón decorativo interior
+        ctx.strokeStyle = 'rgba(155, 89, 182, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([5, 3]);
+        ctx.beginPath();
+        ctx.arc(canvas.width/2, canvas.height/2, canvas.width * 0.1, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
+    
+    // Actualizar tiempo
     if (isSplineAnimating && splineTime < 100) {
-        splineTime += splineSpeed * 0.8;
+        splineTime += splineSpeed * 0.6;
     } else if (splineTime >= 100) {
         document.getElementById('spline-status').textContent = 'Jarrón completado ✓';
         isSplineAnimating = false;
         document.getElementById('spline-start-btn').innerHTML = '<i class="fas fa-redo"></i> Reiniciar';
         document.getElementById('spline-start-btn').disabled = false;
         document.getElementById('spline-pause-btn').disabled = true;
-        
-        
-        drawVaseDetails(ctx);
     }
     
-    
+    // Continuar animación
     if (isSplineAnimating) {
         splineAnimationId = requestAnimationFrame(drawSplineAnimation);
     }
 }
 
-function drawVaseDetails(ctx) {
-    const canvas = document.getElementById('spline-canvas');
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const vaseHeight = canvas.height * 0.6;
-    
-    ctx.strokeStyle = 'rgba(155, 89, 182, 0.4)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([5, 3]);
-    
-    for (let i = 1; i <= 3; i++) {
-        const y = centerY - vaseHeight/4 + (i * vaseHeight/4);
-        ctx.beginPath();
-        ctx.arc(centerX, y, canvas.width * 0.15, 0, Math.PI * 2);
-        ctx.stroke();
-    }
-    
-    ctx.setLineDash([]);
-}
+// ========== SERIES DE FOURIER - CORAZÓN CENTRADO ==========
 
-
+// Inicializar canvas de Fourier
 function initFourierCanvas() {
     const canvas = document.getElementById('fourier-canvas');
     const container = canvas.parentElement;
@@ -204,36 +248,37 @@ function initFourierCanvas() {
     canvas.height = container.clientHeight;
 }
 
+// Generar coeficientes para corazón bien centrado
 function generateFourierHeartCoefficients() {
     fourierCoefficients = [];
     fourierTerms = parseInt(document.getElementById('fourier-terms').value);
     
+    // Coeficientes optimizados para corazón centrado
+    // Fórmula paramétrica del corazón: 
+    // x = 16 sin³(t), y = 13 cos(t) - 5 cos(2t) - 2 cos(3t) - cos(4t)
+    // Escalada para que quede centrado
+    
     for (let n = 0; n <= fourierTerms; n++) {
         let a_x = 0, b_x = 0, a_y = 0, b_y = 0;
         
-        
-        if (n === 1) {
-            
-            b_x = 12; 
-        } else if (n === 3) {
-            b_x = -4; 
-        }
-        
+        // Transformada de Fourier de la ecuación del corazón
         if (n === 0) {
             a_y = 0;
         } else if (n === 1) {
-            a_y = 6.5; 
+            b_x = 12;  // 16 * 3/4 para sin³(t)
+            a_y = 6.5; // 13/2
         } else if (n === 2) {
-            a_y = -2.5; 
+            a_y = -2.5; // -5/2
         } else if (n === 3) {
-            a_y = -1; 
+            b_x = -4;   // 16 * (-1/4)
+            a_y = -1;   // -2/2
         } else if (n === 4) {
-            a_y = -0.5; 
+            a_y = -0.5; // -1/2
         }
-        
-        if (n > 4 && n <= 10) {
-            a_y += (0.3 / n) * Math.sin(n * 0.5);
-            b_x += (0.2 / n) * Math.cos(n * 0.3);
+        // Para n > 4, añadir términos pequeños para suavizar
+        else if (n <= 8) {
+            a_y = 0.1 / n * Math.sin(n * 0.5);
+            b_x = 0.05 / n * Math.cos(n * 0.3);
         }
         
         fourierCoefficients.push({
@@ -250,6 +295,7 @@ function generateFourierHeartCoefficients() {
     }
 }
 
+// Calcular punto del corazón centrado
 function calculateHeartPoint(t) {
     let x = 0;
     let y = 0;
@@ -262,58 +308,68 @@ function calculateHeartPoint(t) {
         y += coef.a_y * Math.cos(angle) + coef.b_y * Math.sin(angle);
     }
     
-    return {x: x, y: y};
+    return {x: x, y: -y}; // Invertir Y para canvas
 }
 
+// Dibujar animación de Fourier del corazón centrado
 function drawFourierAnimation() {
     const canvas = document.getElementById('fourier-canvas');
     const ctx = canvas.getContext('2d');
     
+    // Limpiar canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    ctx.fillStyle = '#f8f9fa';
+    // Fondo con gradiente
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#f8f9fa');
+    gradient.addColorStop(1, '#f5e8f0');
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const scale = Math.min(canvas.width, canvas.height) * 0.2; 
+    const scale = Math.min(canvas.width, canvas.height) * 0.15; // Tamaño adecuado
     
+    // Calcular progreso
     const progress = fourierTime / (2 * Math.PI);
     const percentage = Math.min(100, Math.floor(progress * 100));
     document.getElementById('fourier-percentage').textContent = percentage + '%';
     document.getElementById('fourier-progress').style.width = percentage + '%';
     
+    // Calcular punto actual del corazón
     const heartPoint = calculateHeartPoint(fourierTime);
     const screenX = centerX + heartPoint.x * scale;
-    const screenY = centerY - heartPoint.y * scale; 
+    const screenY = centerY + heartPoint.y * scale; // NOTA: Y ya está invertido en calculateHeartPoint
     
-    if (screenX >= 0 && screenX <= canvas.width && screenY >= 0 && screenY <= canvas.height) {
-        fourierPath.push({x: screenX, y: screenY});
+    // Agregar punto al path
+    fourierPath.push({x: screenX, y: screenY});
+    
+    // Mantener solo los últimos puntos
+    if (fourierPath.length > 300) {
+        fourierPath = fourierPath.slice(-300);
     }
     
-    if (fourierPath.length > 800) {
-        fourierPath = fourierPath.slice(-800);
-    }
-    
-    if (isFourierAnimating && fourierTime < Math.PI) {
+    // Dibujar epiciclos (solo durante animación)
+    if (isFourierAnimating && fourierTime < Math.PI * 1.5) {
         let currentX = centerX;
         let currentY = centerY;
         
+        // Dibujar primeros 4 epiciclos
         const circlesToShow = Math.min(4, fourierCoefficients.length);
         
         for (let i = 0; i < circlesToShow; i++) {
             const coef = fourierCoefficients[i];
-            const radius = Math.max(coef.radius_x, coef.radius_y) * scale;
+            const radius = coef.radius_x * scale;
             
             if (radius > 2) {
-                
-                const alpha = 0.6 - (i * 0.15);
-                ctx.strokeStyle = `rgba(231, 76, 60, ${alpha})`;
+                // Círculo del epiciclo
+                ctx.strokeStyle = `rgba(231, 76, 60, ${0.6 - i * 0.15})`;
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
                 ctx.arc(currentX, currentY, radius, 0, Math.PI * 2);
                 ctx.stroke();
                 
+                // Línea al borde
                 const angle = coef.freq * fourierTime + coef.phase_x;
                 const nextX = currentX + radius * Math.cos(angle);
                 const nextY = currentY + radius * Math.sin(angle);
@@ -323,7 +379,8 @@ function drawFourierAnimation() {
                 ctx.lineTo(nextX, nextY);
                 ctx.stroke();
                 
-                ctx.fillStyle = `rgba(46, 204, 113, ${0.8 - i * 0.2})`;
+                // Punto en el borde
+                ctx.fillStyle = `rgba(46, 204, 113, ${0.7 - i * 0.15})`;
                 ctx.beginPath();
                 ctx.arc(nextX, nextY, 3, 0, Math.PI * 2);
                 ctx.fill();
@@ -334,24 +391,27 @@ function drawFourierAnimation() {
         }
     }
     
+    // Dibujar la trayectoria del corazón
     if (fourierPath.length > 2) {
+        // Gradiente para el corazón
+        const heartGradient = ctx.createLinearGradient(
+            centerX - scale, centerY,
+            centerX + scale, centerY
+        );
+        heartGradient.addColorStop(0, '#e74c3c');
+        heartGradient.addColorStop(0.5, '#9b59b6');
+        heartGradient.addColorStop(1, '#3498db');
         
-        const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-        gradient.addColorStop(0, '#e74c3c');
-        gradient.addColorStop(0.5, '#9b59b6');
-        gradient.addColorStop(1, '#3498db');
-        
-        ctx.strokeStyle = gradient;
+        ctx.strokeStyle = heartGradient;
         ctx.lineWidth = 3;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         ctx.beginPath();
         
-        
+        // Suavizar el trazo
         ctx.moveTo(fourierPath[0].x, fourierPath[0].y);
         
         for (let i = 1; i < fourierPath.length; i++) {
-            
             const prev = fourierPath[i-1];
             const curr = fourierPath[i];
             
@@ -371,19 +431,22 @@ function drawFourierAnimation() {
         ctx.stroke();
     }
     
+    // Dibujar punto actual
     ctx.fillStyle = '#2ecc71';
     ctx.beginPath();
     ctx.arc(screenX, screenY, 6, 0, Math.PI * 2);
     ctx.fill();
     
+    // Anillo animado alrededor
     ctx.strokeStyle = '#2ecc71';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(screenX, screenY, 12, 0, Math.PI * 2);
+    ctx.arc(screenX, screenY, 12 + Math.sin(Date.now() * 0.006) * 4, 0, Math.PI * 2);
     ctx.stroke();
     
+    // Dibujar corazón completo al final
     if (fourierTime >= 2 * Math.PI && fourierPath.length > 100) {
-
+        // Rellenar el corazón
         ctx.fillStyle = 'rgba(231, 76, 60, 0.1)';
         ctx.beginPath();
         ctx.moveTo(fourierPath[0].x, fourierPath[0].y);
@@ -394,13 +457,20 @@ function drawFourierAnimation() {
         
         ctx.closePath();
         ctx.fill();
+        
+        // Texto de completado
+        ctx.fillStyle = '#27ae60';
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('❤️ Corazón completado', centerX, 30);
     }
     
+    // Actualizar tiempo
     if (isFourierAnimating && fourierTime < 2 * Math.PI) {
-        fourierTime += 0.04 * fourierSpeed;
+        fourierTime += 0.03 * fourierSpeed;
         const currentTerm = Math.floor(fourierTime / (2 * Math.PI) * fourierTerms);
         document.getElementById('fourier-status').textContent = 
-            `Armónico ${currentTerm} de ${fourierTerms} | Dibujando corazón...`;
+            `Armónico ${currentTerm} de ${fourierTerms}`;
     } else if (fourierTime >= 2 * Math.PI) {
         document.getElementById('fourier-status').textContent = 'Corazón completado ❤️';
         isFourierAnimating = false;
@@ -409,18 +479,21 @@ function drawFourierAnimation() {
         document.getElementById('fourier-pause-btn').disabled = true;
     }
     
+    // Continuar animación
     if (isFourierAnimating) {
         fourierAnimationId = requestAnimationFrame(drawFourierAnimation);
     }
 }
 
+// ========== FUNCIONES DE CONTROL ==========
 
+// Controlar animación de splines
 function startSplineAnimation() {
     const speedSelect = document.getElementById('spline-speed');
     switch(speedSelect.value) {
-        case 'slow': splineSpeed = 0.5; break;
-        case 'normal': splineSpeed = 1; break;
-        case 'fast': splineSpeed = 1.5; break;
+        case 'slow': splineSpeed = 0.4; break;
+        case 'normal': splineSpeed = 0.7; break;
+        case 'fast': splineSpeed = 1.2; break;
     }
     
     if (!isSplineAnimating) {
@@ -431,7 +504,7 @@ function startSplineAnimation() {
         document.getElementById('spline-start-btn').innerHTML = '<i class="fas fa-play"></i> Dibujando...';
         document.getElementById('spline-start-btn').disabled = true;
         document.getElementById('spline-pause-btn').disabled = false;
-        document.getElementById('spline-status').textContent = 'Creando jarrón con splines cúbicos...';
+        document.getElementById('spline-status').textContent = 'Creando jarrón...';
         splineAnimationId = requestAnimationFrame(drawSplineAnimation);
     }
 }
@@ -466,6 +539,7 @@ function resetSplineAnimation() {
     drawSplineAnimation();
 }
 
+// Controlar animación de Fourier
 function startFourierAnimation() {
     const speedSelect = document.getElementById('fourier-speed');
     switch(speedSelect.value) {
@@ -474,6 +548,7 @@ function startFourierAnimation() {
         case 'fast': fourierSpeed = 1.5; break;
     }
     
+    // Actualizar términos si cambió
     const newTerms = parseInt(document.getElementById('fourier-terms').value);
     if (newTerms !== fourierTerms) {
         fourierTerms = newTerms;
@@ -488,7 +563,7 @@ function startFourierAnimation() {
         document.getElementById('fourier-start-btn').innerHTML = '<i class="fas fa-play"></i> Dibujando...';
         document.getElementById('fourier-start-btn').disabled = true;
         document.getElementById('fourier-pause-btn').disabled = false;
-        document.getElementById('fourier-status').textContent = 'Generando corazón con series de Fourier...';
+        document.getElementById('fourier-status').textContent = 'Generando corazón...';
         fourierAnimationId = requestAnimationFrame(drawFourierAnimation);
     }
 }
@@ -524,14 +599,15 @@ function resetFourierAnimation() {
     drawFourierAnimation();
 }
 
+// ========== EVENT LISTENERS ==========
 
 document.getElementById('spline-speed').addEventListener('change', function() {
     if (isSplineAnimating) {
         const speedSelect = document.getElementById('spline-speed');
         switch(speedSelect.value) {
-            case 'slow': splineSpeed = 0.5; break;
-            case 'normal': splineSpeed = 1; break;
-            case 'fast': splineSpeed = 1.5; break;
+            case 'slow': splineSpeed = 0.4; break;
+            case 'normal': splineSpeed = 0.7; break;
+            case 'fast': splineSpeed = 1.2; break;
         }
     }
 });
@@ -555,6 +631,7 @@ document.getElementById('fourier-terms').addEventListener('change', function() {
     }
 });
 
+// Redimensionar canvas cuando cambia el tamaño de la ventana
 window.addEventListener('resize', function() {
     initSplineCanvas();
     initFourierCanvas();
@@ -571,4 +648,3 @@ window.addEventListener('resize', function() {
         drawFourierAnimation();
     }
 });
-

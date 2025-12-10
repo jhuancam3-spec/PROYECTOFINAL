@@ -283,7 +283,8 @@ function drawSplineAnimation() {
     }
 }
 
-// ========== SERIES DE FOURIER - CORAZÓN PEQUEÑO ==========
+
+// ========== SERIES DE FOURIER - CORAZÓN CENTRADO ==========
 
 // Inicializar canvas de Fourier
 function initFourierCanvas() {
@@ -293,36 +294,37 @@ function initFourierCanvas() {
     canvas.height = container.clientHeight;
 }
 
-// Generar coeficientes para corazón PEQUEÑO
+// Generar coeficientes para corazón bien centrado
 function generateFourierHeartCoefficients() {
     fourierCoefficients = [];
     fourierTerms = parseInt(document.getElementById('fourier-terms').value);
     
-    // Coeficientes para corazón PEQUEÑO
-    const scale = 0.035; // MUCHO más pequeño
+    // Coeficientes optimizados para corazón centrado
+    // Fórmula paramétrica del corazón: 
+    // x = 16 sin³(t), y = 13 cos(t) - 5 cos(2t) - 2 cos(3t) - cos(4t)
+    // Escalada para que quede centrado
     
     for (let n = 0; n <= fourierTerms; n++) {
         let a_x = 0, b_x = 0, a_y = 0, b_y = 0;
         
-        // Componentes principales para forma de corazón
+        // Transformada de Fourier de la ecuación del corazón
         if (n === 0) {
-            a_y = -0.1 * scale;
+            a_y = 0;
         } else if (n === 1) {
-            b_x = 0.4 * scale;   // Componente principal X
-            a_y = 0.3 * scale;   // Componente principal Y
+            b_x = 12;  // 16 * 3/4 para sin³(t)
+            a_y = 6.5; // 13/2
         } else if (n === 2) {
-            a_y = -0.12 * scale; // Para la indentación
+            a_y = -2.5; // -5/2
         } else if (n === 3) {
-            b_x = -0.05 * scale;
-            a_y = 0.08 * scale;
+            b_x = -4;   // 16 * (-1/4)
+            a_y = -1;   // -2/2
         } else if (n === 4) {
-            a_y = -0.02 * scale;
-        } else if (n % 2 === 0 && n <= 10) {
-            // Términos pares pequeños
-            a_y = (0.02 * scale) / (n/2);
-        } else if (n % 2 === 1 && n <= 10) {
-            // Términos impares pequeños
-            b_x = (0.015 * scale) / ((n+1)/2);
+            a_y = -0.5; // -1/2
+        }
+        // Para n > 4, añadir términos pequeños para suavizar
+        else if (n <= 8) {
+            a_y = 0.1 / n * Math.sin(n * 0.5);
+            b_x = 0.05 / n * Math.cos(n * 0.3);
         }
         
         fourierCoefficients.push({
@@ -339,7 +341,7 @@ function generateFourierHeartCoefficients() {
     }
 }
 
-// Calcular punto del corazón PEQUEÑO
+// Calcular punto del corazón centrado
 function calculateHeartPoint(t) {
     let x = 0;
     let y = 0;
@@ -355,7 +357,7 @@ function calculateHeartPoint(t) {
     return {x: x, y: -y}; // Invertir Y para canvas
 }
 
-// Dibujar animación de Fourier del corazón PEQUEÑO
+// Dibujar animación de Fourier del corazón centrado
 function drawFourierAnimation() {
     const canvas = document.getElementById('fourier-canvas');
     const ctx = canvas.getContext('2d');
@@ -372,7 +374,7 @@ function drawFourierAnimation() {
     
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const scale = Math.min(canvas.width, canvas.height) * 0.08; // MUCHO más pequeño
+    const scale = Math.min(canvas.width, canvas.height) * 0.15; // Tamaño adecuado
     
     // Calcular progreso
     const progress = fourierTime / (2 * Math.PI);
@@ -380,35 +382,35 @@ function drawFourierAnimation() {
     document.getElementById('fourier-percentage').textContent = percentage + '%';
     document.getElementById('fourier-progress').style.width = percentage + '%';
     
-    // Calcular punto actual del corazón PEQUEÑO
+    // Calcular punto actual del corazón
     const heartPoint = calculateHeartPoint(fourierTime);
-    const screenX = centerX + heartPoint.x * scale * 40; // Escala reducida
-    const screenY = centerY + heartPoint.y * scale * 40;
+    const screenX = centerX + heartPoint.x * scale;
+    const screenY = centerY + heartPoint.y * scale; // NOTA: Y ya está invertido en calculateHeartPoint
     
     // Agregar punto al path
     fourierPath.push({x: screenX, y: screenY});
     
     // Mantener solo los últimos puntos
-    if (fourierPath.length > 250) {
-        fourierPath = fourierPath.slice(-250);
+    if (fourierPath.length > 300) {
+        fourierPath = fourierPath.slice(-300);
     }
     
-    // Dibujar epiciclos (más pequeños)
+    // Dibujar epiciclos (solo durante animación)
     if (isFourierAnimating && fourierTime < Math.PI * 1.5) {
         let currentX = centerX;
         let currentY = centerY;
         
-        // Dibujar primeros 3 epiciclos pequeños
-        const circlesToShow = Math.min(3, fourierCoefficients.length);
+        // Dibujar primeros 4 epiciclos
+        const circlesToShow = Math.min(4, fourierCoefficients.length);
         
         for (let i = 0; i < circlesToShow; i++) {
             const coef = fourierCoefficients[i];
-            const radius = coef.radius_x * scale * 25; // Radio pequeño
+            const radius = coef.radius_x * scale;
             
-            if (radius > 1.5) {
-                // Círculo pequeño
-                ctx.strokeStyle = `rgba(231, 76, 60, ${0.5 - i * 0.15})`;
-                ctx.lineWidth = 1;
+            if (radius > 2) {
+                // Círculo del epiciclo
+                ctx.strokeStyle = `rgba(231, 76, 60, ${0.6 - i * 0.15})`;
+                ctx.lineWidth = 1.5;
                 ctx.beginPath();
                 ctx.arc(currentX, currentY, radius, 0, Math.PI * 2);
                 ctx.stroke();
@@ -423,10 +425,10 @@ function drawFourierAnimation() {
                 ctx.lineTo(nextX, nextY);
                 ctx.stroke();
                 
-                // Punto pequeño en el borde
-                ctx.fillStyle = `rgba(46, 204, 113, ${0.6 - i * 0.15})`;
+                // Punto en el borde
+                ctx.fillStyle = `rgba(46, 204, 113, ${0.7 - i * 0.15})`;
                 ctx.beginPath();
-                ctx.arc(nextX, nextY, 2.5, 0, Math.PI * 2);
+                ctx.arc(nextX, nextY, 3, 0, Math.PI * 2);
                 ctx.fill();
                 
                 currentX = nextX;
@@ -435,19 +437,19 @@ function drawFourierAnimation() {
         }
     }
     
-    // Dibujar la trayectoria del corazón (línea fina)
+    // Dibujar la trayectoria del corazón
     if (fourierPath.length > 2) {
-        // Gradiente para el corazón pequeño
+        // Gradiente para el corazón
         const heartGradient = ctx.createLinearGradient(
-            centerX - scale * 20, centerY,
-            centerX + scale * 20, centerY
+            centerX - scale, centerY,
+            centerX + scale, centerY
         );
         heartGradient.addColorStop(0, '#e74c3c');
         heartGradient.addColorStop(0.5, '#9b59b6');
         heartGradient.addColorStop(1, '#3498db');
         
         ctx.strokeStyle = heartGradient;
-        ctx.lineWidth = 2; // Línea más fina
+        ctx.lineWidth = 3;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         ctx.beginPath();
@@ -475,24 +477,23 @@ function drawFourierAnimation() {
         ctx.stroke();
     }
     
-    // Dibujar punto actual pequeño
+    // Dibujar punto actual
     ctx.fillStyle = '#2ecc71';
     ctx.beginPath();
-    ctx.arc(screenX, screenY, 4, 0, Math.PI * 2);
+    ctx.arc(screenX, screenY, 6, 0, Math.PI * 2);
     ctx.fill();
     
-    // Anillo pequeño animado
+    // Anillo animado alrededor
     ctx.strokeStyle = '#2ecc71';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    const pulse = 8 + Math.sin(Date.now() * 0.006) * 3;
-    ctx.arc(screenX, screenY, pulse, 0, Math.PI * 2);
+    ctx.arc(screenX, screenY, 12 + Math.sin(Date.now() * 0.006) * 4, 0, Math.PI * 2);
     ctx.stroke();
     
     // Dibujar corazón completo al final
-    if (fourierTime >= 2 * Math.PI && fourierPath.length > 80) {
-        // Relleno suave del corazón
-        ctx.fillStyle = 'rgba(231, 76, 60, 0.08)';
+    if (fourierTime >= 2 * Math.PI && fourierPath.length > 100) {
+        // Rellenar el corazón
+        ctx.fillStyle = 'rgba(231, 76, 60, 0.1)';
         ctx.beginPath();
         ctx.moveTo(fourierPath[0].x, fourierPath[0].y);
         
@@ -503,19 +504,16 @@ function drawFourierAnimation() {
         ctx.closePath();
         ctx.fill();
         
-        // Texto pequeño
+        // Texto de completado
         ctx.fillStyle = '#27ae60';
-        ctx.font = 'bold 13px Arial';
+        ctx.font = 'bold 16px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('❤️', centerX, centerY);
-        ctx.font = '11px Arial';
-        ctx.fillStyle = '#7f8c8d';
-        ctx.fillText(`${fourierTerms} términos de Fourier`, centerX, centerY + 15);
+        ctx.fillText('❤️ Corazón completado', centerX, 30);
     }
     
     // Actualizar tiempo
     if (isFourierAnimating && fourierTime < 2 * Math.PI) {
-        fourierTime += 0.04 * fourierSpeed;
+        fourierTime += 0.03 * fourierSpeed;
         const currentTerm = Math.floor(fourierTime / (2 * Math.PI) * fourierTerms);
         document.getElementById('fourier-status').textContent = 
             `Armónico ${currentTerm} de ${fourierTerms}`;
@@ -539,9 +537,9 @@ function drawFourierAnimation() {
 function startSplineAnimation() {
     const speedSelect = document.getElementById('spline-speed');
     switch(speedSelect.value) {
-        case 'slow': splineSpeed = 0.3; break;
-        case 'normal': splineSpeed = 0.6; break;
-        case 'fast': splineSpeed = 1.0; break;
+        case 'slow': splineSpeed = 0.4; break;
+        case 'normal': splineSpeed = 0.7; break;
+        case 'fast': splineSpeed = 1.2; break;
     }
     
     if (!isSplineAnimating) {
@@ -552,7 +550,7 @@ function startSplineAnimation() {
         document.getElementById('spline-start-btn').innerHTML = '<i class="fas fa-play"></i> Dibujando...';
         document.getElementById('spline-start-btn').disabled = true;
         document.getElementById('spline-pause-btn').disabled = false;
-        document.getElementById('spline-status').textContent = 'Creando jarrón detallado...';
+        document.getElementById('spline-status').textContent = 'Creando jarrón...';
         splineAnimationId = requestAnimationFrame(drawSplineAnimation);
     }
 }
@@ -583,7 +581,7 @@ function resetSplineAnimation() {
     }
     
     isSplineAnimating = false;
-    generateDetailedVasePoints();
+    generateVasePoints();
     drawSplineAnimation();
 }
 
@@ -611,7 +609,7 @@ function startFourierAnimation() {
         document.getElementById('fourier-start-btn').innerHTML = '<i class="fas fa-play"></i> Dibujando...';
         document.getElementById('fourier-start-btn').disabled = true;
         document.getElementById('fourier-pause-btn').disabled = false;
-        document.getElementById('fourier-status').textContent = 'Generando corazón pequeño...';
+        document.getElementById('fourier-status').textContent = 'Generando corazón...';
         fourierAnimationId = requestAnimationFrame(drawFourierAnimation);
     }
 }
@@ -653,9 +651,9 @@ document.getElementById('spline-speed').addEventListener('change', function() {
     if (isSplineAnimating) {
         const speedSelect = document.getElementById('spline-speed');
         switch(speedSelect.value) {
-            case 'slow': splineSpeed = 0.3; break;
-            case 'normal': splineSpeed = 0.6; break;
-            case 'fast': splineSpeed = 1.0; break;
+            case 'slow': splineSpeed = 0.4; break;
+            case 'normal': splineSpeed = 0.7; break;
+            case 'fast': splineSpeed = 1.2; break;
         }
     }
 });
@@ -683,7 +681,7 @@ document.getElementById('fourier-terms').addEventListener('change', function() {
 window.addEventListener('resize', function() {
     initSplineCanvas();
     initFourierCanvas();
-    generateDetailedVasePoints();
+    generateVasePoints();
     generateFourierHeartCoefficients();
     
     if (!isSplineAnimating) {

@@ -1,8 +1,6 @@
-// Variables globales para gráficos
 let tempRegressionChart = null;
 let populationRegressionChart = null;
 
-// Agregar pares de datos
 function addDataPair(type) {
     let container;
     let html;
@@ -26,7 +24,6 @@ function addDataPair(type) {
     container.insertAdjacentHTML('beforeend', html);
 }
 
-// Eliminar último par de datos
 function removeDataPair(type) {
     let container;
     
@@ -41,9 +38,8 @@ function removeDataPair(type) {
     }
 }
 
-// Calcular regresión para temperatura
 function calculateTempRegression() {
-    // Obtener datos de temperatura
+    
     const hourInputs = document.getElementsByClassName('hour-input');
     const tempInputs = document.getElementsByClassName('temp-input');
     
@@ -65,14 +61,14 @@ function calculateTempRegression() {
         return;
     }
     
-    // Calcular regresión
+   
     const result = calculateLinearRegression(xValues, yValues);
     
-    // Predecir temperatura
+   
     const predictHour = parseFloat(document.getElementById('predict-hour').value);
     const predictedTemp = result.slope * predictHour + result.intercept;
     
-    // Mostrar resultados
+    
     const resultDiv = document.getElementById('temp-regression-result');
     resultDiv.innerHTML = `
         <div class="result">
@@ -85,16 +81,13 @@ function calculateTempRegression() {
         </div>
     `;
     
-    // Mostrar sección de resultados
     document.getElementById('temp-result-section').style.display = 'block';
     
-    // Crear gráfico
     createTempChart(xValues, yValues, result.slope, result.intercept, predictHour, predictedTemp);
 }
 
-// Calcular regresión para población
 function calculatePopulationRegression() {
-    // Obtener datos de población
+    
     const yearInputs = document.getElementsByClassName('year-input');
     const popInputs = document.getElementsByClassName('pop-input');
     
@@ -116,17 +109,13 @@ function calculatePopulationRegression() {
         return;
     }
     
-    // Calcular regresión
     const result = calculateLinearRegression(xValues, yValues);
     
-    // Predecir población
     const predictYear = parseFloat(document.getElementById('predict-year').value);
     const predictedPop = result.slope * predictYear + result.intercept;
     
-    // Calcular tasa de crecimiento anual
     const tasaCrecimiento = (result.slope / yValues[0]) * 100;
     
-    // Mostrar resultados
     const resultDiv = document.getElementById('population-regression-result');
     resultDiv.innerHTML = `
         <div class="result">
@@ -140,14 +129,11 @@ function calculatePopulationRegression() {
         </div>
     `;
     
-    // Mostrar sección de resultados
     document.getElementById('population-result-section').style.display = 'block';
     
-    // Crear gráfico
     createPopulationChart(xValues, yValues, result.slope, result.intercept, predictYear, predictedPop);
 }
 
-// Función genérica para calcular regresión lineal
 function calculateLinearRegression(xValues, yValues) {
     const n = xValues.length;
     let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
@@ -162,7 +148,6 @@ function calculateLinearRegression(xValues, yValues) {
     const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
     const intercept = (sumY - slope * sumX) / n;
     
-    // Calcular coeficiente de determinación R²
     let ssTotal = 0, ssResidual = 0;
     const yMean = sumY / n;
     
@@ -181,25 +166,22 @@ function calculateLinearRegression(xValues, yValues) {
     };
 }
 
-// Crear gráfico para temperatura
 function createTempChart(xValues, yValues, slope, intercept, predictHour, predictedTemp) {
     const ctx = document.getElementById('temp-regression-chart').getContext('2d');
     
-    // Calcular puntos para la línea de regresión
     const minX = Math.min(...xValues);
     const maxX = Math.max(...xValues);
     const lineX = [minX - 1, maxX + 1];
     const lineY = [slope * (minX - 1) + intercept, slope * (maxX + 1) + intercept];
     
-    // Datos para la predicción
     const predictionPoint = {x: predictHour, y: predictedTemp};
     
-    // Destruir gráfico anterior si existe
+    
     if (tempRegressionChart) {
         tempRegressionChart.destroy();
     }
     
-    // Crear nuevo gráfico
+    
     tempRegressionChart = new Chart(ctx, {
         type: 'scatter',
         data: {
@@ -274,25 +256,20 @@ function createTempChart(xValues, yValues, slope, intercept, predictHour, predic
     });
 }
 
-// Crear gráfico para población
 function createPopulationChart(xValues, yValues, slope, intercept, predictYear, predictedPop) {
     const ctx = document.getElementById('population-regression-chart').getContext('2d');
     
-    // Calcular puntos para la línea de regresión
     const minX = Math.min(...xValues);
     const maxX = Math.max(...xValues);
     const lineX = [minX - 5, maxX + 5];
     const lineY = [slope * (minX - 5) + intercept, slope * (maxX + 5) + intercept];
     
-    // Datos para la predicción
     const predictionPoint = {x: predictYear, y: predictedPop};
     
-    // Destruir gráfico anterior si existe
     if (populationRegressionChart) {
         populationRegressionChart.destroy();
     }
     
-    // Crear nuevo gráfico
     populationRegressionChart = new Chart(ctx, {
         type: 'scatter',
         data: {
@@ -364,4 +341,5 @@ function createPopulationChart(xValues, yValues, slope, intercept, predictYear, 
             }
         }
     });
+
 }

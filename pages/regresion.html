@@ -46,9 +46,15 @@
                 <input type="number" id="predict-hour" placeholder="Ingresa una hora (0-23)" min="0" max="23" value="14">
             </div>
             
-            <button class="calculate-btn" onclick="calculateTempRegression()">
-                <i class="fas fa-calculator"></i> Calcular Regresión de Temperatura
-            </button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="calculate-btn" onclick="calculateTempRegression()">
+                    <i class="fas fa-calculator"></i> Calcular Regresión de Temperatura
+                </button>
+                
+                <button class="excel-btn" onclick="window.open('excel/Regresion_Temperatura.xlsx', '_blank')">
+                    <i class="fas fa-file-excel"></i> Ver solución en Excel - Temperatura
+                </button>
+            </div>
         </div>
         
         <div id="temp-result-section" class="result-section" style="display: none;">
@@ -59,10 +65,7 @@
                 <canvas id="temp-regression-chart"></canvas>
             </div>
         </div>
-        <a href="excel/Regresion_Temperatura.xlsx" 
-           style="display:inline-flex; align-items:center; gap:8px; padding:10px 20px; background:#3498db; color:white; text-decoration:none; border-radius:6px; margin:5px; font-weight:600;">
-            🌡️ Ver solucion en Excel
-        </a>
+
         <div class="input-section">
             <h3><i class="fas fa-users"></i> Ejercicio 2: Tendencia de crecimiento poblacional</h3>
             <p>Ingresa pares de datos (año, población) para calcular la tendencia de crecimiento y predecir la población futura.</p>
@@ -92,9 +95,15 @@
                 <input type="number" id="predict-year" placeholder="Ingresa un año" value="2025">
             </div>
             
-            <button class="calculate-btn" onclick="calculatePopulationRegression()">
-                <i class="fas fa-calculator"></i> Calcular Tendencia de Población
-            </button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="calculate-btn" onclick="calculatePopulationRegression()">
+                    <i class="fas fa-calculator"></i> Calcular Tendencia de Población
+                </button>
+                
+                <button class="excel-btn" onclick="window.open('excel/Regresion_Poblacion.xlsx', '_blank')">
+                    <i class="fas fa-file-excel"></i> Ver solución en Excel - Población
+                </button>
+            </div>
         </div>
         
         <div id="population-result-section" class="result-section" style="display: none;">
@@ -106,12 +115,35 @@
             </div>
         </div>
     </div>
-    <a href="excel/Regresion_Poblacion.xlsx" 
-       style="display:inline-flex; align-items:center; gap:8px; padding:10px 20px; background:#3498db; color:white; text-decoration:none; border-radius:6px; margin:5px; font-weight:600;">
-        👥 Ver solucion en Excel
-    </a>
+
     <script src="../js/regresion.js"></script>
+    
+    <style>
+        .excel-btn {
+            background: linear-gradient(to right, #1d6f42, #0d8b4d);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .excel-btn:hover {
+            background: linear-gradient(to right, #0d8b4d, #1d6f42);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .excel-btn i {
+            font-size: 18px;
+        }
+    </style>
 </body>
-
 </html>
-

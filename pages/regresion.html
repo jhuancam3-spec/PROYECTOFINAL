@@ -17,6 +17,7 @@
             <p>Calcula la línea de mejor ajuste para predecir valores basados en datos existentes</p>
         </div>
         
+        <!-- Ejercicio 1: Temperatura -->
         <div class="input-section">
             <h3><i class="fas fa-thermometer-half"></i> Ejercicio 1: Predecir temperatura según hora del día</h3>
             <p>Ingresa pares de datos (hora, temperatura) para calcular la tendencia y predecir la temperatura a cualquier hora.</p>
@@ -46,11 +47,23 @@
                 <input type="number" id="predict-hour" placeholder="Ingresa una hora (0-23)" min="0" max="23" value="14">
             </div>
             
-            <button class="calculate-btn" onclick="calculateRegression('temp')">
-                <i class="fas fa-calculator"></i> Calcular Regresión y Predecir
+            <button class="calculate-btn" onclick="calculateTempRegression()">
+                <i class="fas fa-calculator"></i> Calcular Regresión de Temperatura
             </button>
         </div>
         
+        <!-- Resultados Ejercicio 1 -->
+        <div id="temp-result-section" class="result-section" style="display: none;">
+            <h3><i class="fas fa-chart-bar"></i> Resultados - Predicción de Temperatura</h3>
+            <div id="temp-regression-result">
+                <!-- Los resultados se mostrarán aquí -->
+            </div>
+            <div class="chart-container">
+                <canvas id="temp-regression-chart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Ejercicio 2: Población -->
         <div class="input-section">
             <h3><i class="fas fa-users"></i> Ejercicio 2: Tendencia de crecimiento poblacional</h3>
             <p>Ingresa pares de datos (año, población) para calcular la tendencia de crecimiento y predecir la población futura.</p>
@@ -80,18 +93,19 @@
                 <input type="number" id="predict-year" placeholder="Ingresa un año" value="2025">
             </div>
             
-            <button class="calculate-btn" onclick="calculateRegression('population')">
-                <i class="fas fa-calculator"></i> Calcular Tendencia y Predecir
+            <button class="calculate-btn" onclick="calculatePopulationRegression()">
+                <i class="fas fa-calculator"></i> Calcular Tendencia de Población
             </button>
         </div>
         
-        <div class="result-section">
-            <h3><i class="fas fa-chart-bar"></i> Resultados</h3>
-            <div id="regression-result">
-                <p>Los resultados aparecerán aquí después de calcular.</p>
+        <!-- Resultados Ejercicio 2 -->
+        <div id="population-result-section" class="result-section" style="display: none;">
+            <h3><i class="fas fa-chart-bar"></i> Resultados - Tendencia de Población</h3>
+            <div id="population-regression-result">
+                <!-- Los resultados se mostrarán aquí -->
             </div>
             <div class="chart-container">
-                <canvas id="regression-chart"></canvas>
+                <canvas id="population-regression-chart"></canvas>
             </div>
         </div>
     </div>
@@ -99,3 +113,4 @@
     <script src="../js/regresion.js"></script>
 </body>
 </html>
+

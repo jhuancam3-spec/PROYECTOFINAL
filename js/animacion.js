@@ -266,12 +266,12 @@ function generateFourierHeartCoefficients() {
         if (n === 0) {
             a_y = 0;
         } else if (n === 1) {
-            b_x = 8;  
+            b_x = 4;  
             a_y = 6.5; 
         } else if (n === 2) {
             a_y = -2.5; 
         } else if (n === 3) {
-            b_x = -2.7;   
+            b_x = -0.7;   
             a_y = -1;  
         } else if (n === 4) {
             a_y = -0.5; 
@@ -327,7 +327,7 @@ function drawFourierAnimation() {
     
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const scale = Math.min(canvas.width, canvas.height) * 0.075; // Tamaño adecuado
+    const scale = Math.min(canvas.width, canvas.height) * 0.0100; // Tamaño adecuado
     
    
     const progress = fourierTime / (2 * Math.PI);
@@ -628,6 +628,7 @@ window.addEventListener('resize', function() {
         drawFourierAnimation();
     }
 });
+
 
 
 

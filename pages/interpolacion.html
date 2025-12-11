@@ -60,7 +60,80 @@
                 <canvas id="lagrange-interpolation-chart"></canvas>
             </div>
         </div>
-        
+        <div style="display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0;">
+
+    <!-- Botón 1: Interpolación - Lagrange -->
+    <div style="
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        border-radius: 10px;
+        padding: 20px;
+        min-width: 250px;
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+        transition: transform 0.3s ease;
+    ">
+        <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-chart-line" style="font-size: 24px; color: white;"></i>
+            <h4 style="margin: 0; color: white; font-weight: 600;">Interpolación Polinómica</h4>
+        </div>
+        <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px; font-size: 14px;">Método de Lagrange</p>
+        <a href="../excel/Interpolacion_Lagrange.xlsx" download style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            color: #f39c12;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        ">
+            <i class="fas fa-download"></i> Descargar Excel
+        </a>
+    </div>
+
+    <!-- Botón 2: Interpolación - Newton -->
+    <div style="
+        background: linear-gradient(135deg, #16a085, #1abc9c);
+        border-radius: 10px;
+        padding: 20px;
+        min-width: 250px;
+        box-shadow: 0 4px 12px rgba(22, 160, 133, 0.3);
+        transition: transform 0.3s ease;
+    ">
+        <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-project-diagram" style="font-size: 24px; color: white;"></i>
+            <h4 style="margin: 0; color: white; font-weight: 600;">Interpolación Polinómica</h4>
+        </div>
+        <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px; font-size: 14px;">Método de Newton</p>
+        <a href="../excel/Interpolacion_Newton.xlsx" download style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            color: #16a085;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        ">
+            <i class="fas fa-download"></i> Descargar Excel
+        </a>
+    </div>
+
+</div>
+
+<style>
+    div[style*="background: linear-gradient"]:hover {
+        transform: translateY(-5px);
+    }
+    
+    a[download]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+</style>
         <div class="input-section">
             <h3><i class="fas fa-code-branch"></i> Ejercicio 2: Interpolación de Newton</h3>
             <p>Ingresa puntos (x, y) para calcular el polinomio interpolante de Newton usando diferencias divididas.</p>
@@ -108,8 +181,82 @@
             </div>
         </div>
     </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0;">
 
+    <!-- Botón 1: Interpolación - Lagrange -->
+    <div style="
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        border-radius: 10px;
+        padding: 20px;
+        min-width: 250px;
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+        transition: transform 0.3s ease;
+    ">
+        <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-chart-line" style="font-size: 24px; color: white;"></i>
+            <h4 style="margin: 0; color: white; font-weight: 600;">Interpolación Polinómica</h4>
+        </div>
+        <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px; font-size: 14px;">Método de Lagrange</p>
+        <a href="../excel/Interpolacion_Lagrange.xlsx" download style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            color: #f39c12;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        ">
+            <i class="fas fa-download"></i> Descargar Excel
+        </a>
+    </div>
+
+    <!-- Botón 2: Interpolación - Newton -->
+    <div style="
+        background: linear-gradient(135deg, #16a085, #1abc9c);
+        border-radius: 10px;
+        padding: 20px;
+        min-width: 250px;
+        box-shadow: 0 4px 12px rgba(22, 160, 133, 0.3);
+        transition: transform 0.3s ease;
+    ">
+        <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-project-diagram" style="font-size: 24px; color: white;"></i>
+            <h4 style="margin: 0; color: white; font-weight: 600;">Interpolación Polinómica</h4>
+        </div>
+        <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px; font-size: 14px;">Método de Newton</p>
+        <a href="../excel/Interpolacion_Newton.xlsx" download style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            color: #16a085;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        ">
+            <i class="fas fa-download"></i> Descargar Excel
+        </a>
+    </div>
+
+</div>
+
+<style>
+    div[style*="background: linear-gradient"]:hover {
+        transform: translateY(-5px);
+    }
+    
+    a[download]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+</style>
     <script src="../js/interpolacion.js"></script>
 </body>
 
 </html>
+
